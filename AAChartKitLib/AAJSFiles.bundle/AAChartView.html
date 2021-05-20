@@ -119,6 +119,11 @@
         
         function redrawWithAnimation(animation) {
             var animationBool = (animation == "1") ? true:false;
+            var duration = parseInt(animation)
+            
+            if (duration > 1) {
+              animationBool = { duration : duration }
+            }
             aaGlobalChart.redraw(animationBool);
         }
         

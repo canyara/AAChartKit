@@ -228,7 +228,7 @@ WKScriptMessageHandler
                                                 options:(id)options
                                                  redraw:(BOOL)redraw
                                                   shift:(BOOL)shift
-                                              animation:(BOOL)animation {
+                                              animation:(NSUInteger)animation {
     NSString *optionsStr;
     if ([options isKindOfClass:[NSNumber class]]) {
         optionsStr = [NSString stringWithFormat:@"%@",options];
@@ -252,9 +252,13 @@ WKScriptMessageHandler
     [self aa_addPointsToChartSeriesArrayWithOptionsArray:optionsArr shift:true animation:true];
 }
 
+- (void)aa_addPointsToChartSeriesArrayWithOptionsArray:(NSArray *)optionsArr animation:(NSUInteger)animation {
+  [self aa_addPointsToChartSeriesArrayWithOptionsArray:optionsArr shift:true animation:animation];
+}
+
 - (void)aa_addPointsToChartSeriesArrayWithOptionsArray:(NSArray *)optionsArr
                                                  shift:(BOOL)shift
-                                             animation:(BOOL)animation {
+                                             animation:(NSUInteger)animation {
     [optionsArr enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         [self aa_addPointToChartSeriesElementWithElementIndex:idx
                                                       options:obj
@@ -327,7 +331,7 @@ WKScriptMessageHandler
     [self safeEvaluateJavaScriptString:jsFuntionStr];
 }
 
-- (void)aa_redrawWithAnimation:(BOOL)animation {
+- (void)aa_redrawWithAnimation:(NSInteger)animation {
     NSString *jsStr = [NSString stringWithFormat:@"redrawWithAnimation('%d')",animation];
     [self safeEvaluateJavaScriptString:jsStr];
 }

@@ -197,16 +197,17 @@ typedef void(^AADidReceiveScriptMessageBlock)(AAChartView *aaChartView, WKScript
                                                 options:(id)options
                                                  redraw:(BOOL)redraw
                                                   shift:(BOOL)shift
-                                              animation:(BOOL)animation;
+                                              animation:(NSUInteger)animation;
 
 
 - (void)aa_addPointsToChartSeriesArrayWithOptionsArray:(NSArray *)optionsArr;
+- (void)aa_addPointsToChartSeriesArrayWithOptionsArray:(NSArray *)optionsArr animation:(NSUInteger)animation;
 
 /// Add a new group of points to the data column after the chart has been rendered.
 ///
 - (void)aa_addPointsToChartSeriesArrayWithOptionsArray:(NSArray *)optionsArr
                                                  shift:(BOOL)shift
-                                             animation:(BOOL)animation;
+                                             animation:(NSUInteger)animation;
 
 /// Add a new series element to the chart after the chart has been rendered.
 /// Refer to https://api.highcharts.com.cn/highcharts#Chart.addSeries
@@ -254,7 +255,7 @@ typedef void(^AADidReceiveScriptMessageBlock)(AAChartView *aaChartView, WKScript
 
 /// Redraw chart view
 /// @param animation Have animation effect or not
-- (void)aa_redrawWithAnimation:(BOOL)animation;
+- (void)aa_redrawWithAnimation:(NSInteger)animation;
 
 
 /// Set the chart view content be adaptive to screen rotation with default animation effect
