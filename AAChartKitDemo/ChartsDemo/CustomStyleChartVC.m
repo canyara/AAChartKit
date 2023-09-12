@@ -3,7 +3,7 @@
 //  AAChartKitDemo
 //
 //  Created by AnAn on 2018/11/13.
-//  Copyright © 2018 Danny boy. All rights reserved.
+//  Copyright © 2018 An An. All rights reserved.
 //*************** ...... SOURCE CODE ...... ***************
 //***...................................................***
 //*** https://github.com/AAChartModel/AAChartKit        ***
@@ -22,7 +22,7 @@
  * -------------------------------------------------------------------------------
  * And if you want to contribute for this project, please contact me as well
  * GitHub        : https://github.com/AAChartModel
- * StackOverflow : https://stackoverflow.com/users/7842508/codeforu
+ * StackOverflow : https://stackoverflow.com/users/12302132/codeforu
  * JianShu       : https://www.jianshu.com/u/f1e6753d4254
  * SegmentFault  : https://segmentfault.com/u/huanghunbieguan
  *
@@ -32,6 +32,7 @@
 
 #import "CustomStyleChartVC.h"
 #import "AAEasyTool.h"
+#import "AAChartSymbolConstant.h"
 
 @interface CustomStyleChartVC ()
 
@@ -57,7 +58,7 @@
         case 8:  return [self configureStepLineChart];
         case 9:  return [self configureStepAreaChart];
         case 10: return [self configureNightingaleRoseChart];
-        case 11: return [self configureCustomSingleDataLabelChart];
+        case 11: return [self configureCustomSingleDataLabelsElementChart];
         case 12: return [self configureChartWithShadowStyle];
         case 13: return [self configureColorfulGradientAreaChart];
         case 14: return [self configureColorfulGradientSplineChart];
@@ -67,7 +68,7 @@
         case 18: return [self configureAreaChartThreshold];
         case 19: return [self customScatterChartMarkerSymbolContent];
         case 20: return [self customLineChartMarkerSymbolContent];
-        case 21: return [self configrueWithMinusNumberChart];
+        case 21: return [self configureWithMinusNumberChart];
         case 22: return [self splineChartHoverLineWithNoChangeAndCustomMarkerStatesHoverStyle];
         case 23: return [self configurePentagonRadarChart];
         case 24: return [self configureHexagonRadarChart];
@@ -79,18 +80,35 @@
         case 30: return [self customNormalStackingChartDataLabelsContentAndStyle];
         case 31: return [self upsideDownPyramidChart];
         case 32: return [self doubleLayerPieChart];
-        case 33: return [self disableSomeOfLinesMouseTrackingEffect];
-        case 34: return [self configureColorfulShadowSplineChart];
-        case 35: return [self configureColorfulDataLabelsStepLineChart];
-        case 36: return [self configureColorfulGradientColorAndColorfulDataLabelsStepAreaChart];
-        case 37: return [self disableSplineChartMarkerHoverEffect];
-        case 38: return [self topRoundedCornersStackingColumnChart];
+        case 33: return [self doubleLayerDoubleColorsPieChart];
+        case 34: return [self disableSomeOfLinesMouseTrackingEffect];
+        case 35: return [self configureColorfulShadowSplineChart];
+        case 36: return [self configureColorfulDataLabelsStepLineChart];
+        case 37: return [self configureColorfulGradientColorAndColorfulDataLabelsStepAreaChart];
+        case 38: return [self disableSplineChartMarkerHoverEffect];
+        case 39: return [self configureMaxAndMinDataLabelsForChart];
+        case 40: return [self customVerticalXAxisCategoriesLabelsByHTMLBreakLineTag];
+        case 41: return [self noMoreGroupingAndOverlapEachOtherColumnChart];
+        case 42: return [self noMoreGroupingAndNestedColumnChart];
+        case 43: return [self topRoundedCornersStackingColumnChart];
+        case 44: return [self freeStyleRoundedCornersStackingColumnChart];
+        case 45: return [self customColumnChartBorderStyleAndStatesHoverColor];
             
+        case 46: return [self customLineChartWithColorfulMarkersAndLines];
+        case 47: return [self customLineChartWithColorfulMarkersAndLines2];
+        case 48: return [self drawLineChartWithPointsCoordinates];
+        case 49: return [self configureSpecialStyleColumnForNegativeDataMixedPositiveData];
+        case 50: return [self configureMultiLevelStopsArrGradientColorAreasplineMixedLineChart];
+        case 51: return [self connectNullsForSingleAASeriesElement];
+        case 52: return [self lineChartsWithLargeDifferencesInTheNumberOfDataInDifferentSeriesElement];
+        case 53: return [self customAreasplineChartWithColorfulGradientColorZones];
+
         default:
             return nil;
     }
 }
 
+//https://github.com/AAChartModel/AAChartKit/issues/692
 - (AAChartModel *)setUpColorfulBarChart {
     NSArray *colorsNameArr = @[
         @"red",
@@ -105,7 +123,8 @@
         @"lightGray",
         @"magenta",
         @"brown",
-        @"black"];
+        @"black"
+    ];
     
     NSArray *colorsArr = @[
         AAColor.redColor,
@@ -140,6 +159,8 @@
                ]);
 }
 
+
+//https://github.com/AAChartModel/AAChartKit/issues/692
 - (AAChartModel *)setUpColorfulGradientColorChart {
     NSArray *gradientColorNamesArr = @[
         @"oceanBlue",
@@ -212,6 +233,7 @@
                ]);
 }
 
+//https://github.com/AAChartModel/AAChartKit/issues/1265
 - (AAChartModel *)setUpDiscontinuousDataChart {
     return AAChartModel.new
     .chartTypeSet(AAChartTypeColumn)
@@ -245,6 +267,9 @@
         .colorSet((id)AAGradientColor.freshPapayaColor)
         .lineWidthSet(@5)
         .zonesSet(@[
+            AAZonesElement.new
+            .valueSet(@3)
+            .dashStyleSet(AAChartLineDashStyleTypeDash),
             AAZonesElement.new
             .valueSet(@8)
             .dashStyleSet(AAChartLineDashStyleTypeDot)
@@ -364,7 +389,7 @@
     return aaChartModel;
 }
 
-- (AAChartModel *)configrueWithMinusNumberChart {
+- (AAChartModel *)configureWithMinusNumberChart {
     return AAChartModel.new
     .chartTypeSet(AAChartTypeArea)
     .titleSet(@"带有负数的区域填充图")
@@ -408,15 +433,15 @@
         AASeriesElement.new
         .nameSet(@"Berlin")
         .dataSet(@[@450, @432, @401, @454, @590, @530, @510])
-        .stepSet(@"right"), //折线连接点靠右👉
+        .stepSet(AAChartAlignTypeRight), //折线连接点靠右👉
         AASeriesElement.new
         .nameSet(@"New York")
         .dataSet(@[@220, @282, @201, @234, @290, @430, @410])
-        .stepSet(@"center"),//折线连接点居中
+        .stepSet(AAChartAlignTypeCenter),//折线连接点居中
         AASeriesElement.new
         .nameSet(@"Tokyo")
         .dataSet(@[@120, @132, @101, @134, @90, @230, @210])
-        .stepSet(@"left"),//折线连接点靠左边👈
+        .stepSet(AAChartAlignTypeLeft),//折线连接点靠左边👈
                ]);
 }
 
@@ -470,7 +495,7 @@
                ]);
 }
 
-- (AAChartModel*)configureCustomSingleDataLabelChart {
+- (AAChartModel*)configureCustomSingleDataLabelsElementChart {
     AADataElement *aaDataElement = AADataElement.new
     .ySet(@1.25)
     .dataLabelsSet(AADataLabels.new
@@ -532,7 +557,7 @@
         @"一月", @"二月", @"三月", @"四月", @"五月", @"六月",
         @"七月", @"八月", @"九月", @"十月", @"十一月", @"十二月"
                    ])
-    .backgroundColorSet(@"#FFFFFF")
+    .backgroundColorSet(AAColor.whiteColor)
     .markerRadiusSet(@0)
     .yAxisLineWidthSet(@0)
     .yAxisGridLineStyleSet([AALineStyle styleWithWidth:@0])
@@ -547,6 +572,7 @@
                ]);
 }
 
+//https://github.com/AAChartModel/AAChartKit/issues/751#issuecomment-543019799
 - (AAChartModel *)configureColorfulGradientSplineChart {
     NSArray *stopsArr = @[
         @[@0.00, @"#febc0f"],//颜色字符串设置支持十六进制类型和 rgba 类型
@@ -608,6 +634,7 @@
                ]);
 }
 
+//https://github.com/AAChartModel/AAChartKit/issues/695
 - (AAChartModel *)configureSpecialStyleMarkerOfSingleDataElementChart {
     NSArray *stopsArr = @[
         @[@0.00, @"#febc0f"],//颜色字符串设置支持十六进制类型和 rgba 类型
@@ -625,10 +652,10 @@
     .markerSet(AAMarker.new
                .radiusSet(@8)//曲线连接点半径
                .symbolSet(AAChartSymbolTypeCircle)//曲线点类型："circle", "square", "diamond", "triangle","triangle-down"，默认是"circle"
-               .fillColorSet(@"#FFFFFF")//点的填充色(用来设置折线连接点的填充色)
+               .fillColorSet(AAColor.whiteColor)//点的填充色(用来设置折线连接点的填充色)
                .lineWidthSet(@5)//外沿线的宽度(用来设置折线连接点的轮廓描边的宽度)
                //外沿线的颜色(用来设置折线连接点的轮廓描边颜色，当值为空字符串时，默认取数据点或数据列的颜色)
-               .lineColorSet(@"#FF0000")
+               .lineColorSet(AAColor.redColor)
                )
     .ySet(@26.5);
     
@@ -658,13 +685,11 @@
     .chartTypeSet(AAChartTypeColumn)
     .dataLabelsEnabledSet(false)//是否显示值
     .tooltipEnabledSet(false)
-    .markerRadiusSet(@0)
     .xAxisVisibleSet(false)
     .yAxisVisibleSet(false)
     .seriesSet(@[
         AASeriesElement.new
         .nameSet(@"Virtual Data")
-        .lineWidthSet(@6)
         .dataSet(@[@7.0, @6.9, @2.5, @14.5, @18.2, singleSpecialData, @5.2, @26.5, @23.3, @26.5, @13.9, @9.6])
         .colorSet((id)AAGradientColor.oceanBlueColor)
                ]);
@@ -699,11 +724,6 @@
 
 //refer to online sample https://jshare.com.cn/github/highcharts/highcharts/tree/master/samples/highcharts/plotoptions/series-marker-symbol/
 - (AAChartModel *)customScatterChartMarkerSymbolContent {
-    NSString *predefinedSymbol1 = AAChartSymbolTypeTriangle;
-    NSString *predefinedSymbol2 = AAChartSymbolTypeCircle;
-    NSString *imageSymbol = @"url(https://www.highcharts.com/samples/graphics/sun.png)";
-    NSString *base64Symbol = @"url(data:image/png;base64,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 1dT1gvWd+ 1YfqGnRs+FYmKrhTbF5cVf9go3HjlG4dvyr+Z3JS0qavEuWTPZtJm6ebeLZ5bDpaql+aXDm4N2dq0Dd9WtO319kXbL5fNKNu7g7ZDuaO/PLi8ZafJzs07P1SkVPRU+lQ27tLdtWHX+G7R7ht7vPY07NXbW7z3/T7JvttVAVVN1WbVZftJ+7P3P66Jqun4lvttXa1ObXHtxwPSA/0HIw6217nU1R3SPVRSj9Yr60cOxx+ 1/p3vdy0NNg1VjZzG4iNwRHnk6fcJ3/ceDTradox7rOEH0x92HWcdL2pCmvKaRptTmvtbYlu6T8w+0dbq3nr8R9sfD5w0PFl5SvNUyWna6YLTk2fyz4ydlZ19fi753GDborZ752PO32oPb+ 16EHTh0kX/i +c7vDvOXPK4dPKy2+UTV7hXmq86X23qdOo8/pPTT8e7nLuarrlca7nuer21e2b36RueN87d9L158Rb/1tWeOT3dvfN6b/fF9/XfFt1+cif9zsu72Xcn7q28T7xf9EDtQdlD3YfVP1v+3Njv3H9qwHeg89HcR/cGhYPP/pH1jw9DBY+Zj8uGDYbrnjg+OTniP3L96fynQ89kzyaeF/6i/suuFxYvfvjV69fO0ZjRoZfyl5O/bXyl/erA6xmv28bCxh6+yXgzMV70VvvtwXfcdx3vo98PT+R8IH8o/2j5sfVT0Kf7kxmTk/8EA5jz/GMzLdsAAAAgY0hSTQAAeiUAAICDAAD5/wAAgOkAAHUwAADqYAAAOpgAABdvkl/FRgAAAVVJREFUeNpi/P37NwOxYM2pHtm7lw8uYmBgYGAiVtPC3RWh+88vuneT474Dv4DkcUZibJy8PG72le/nkn+zMzAaMhnNyY1clMpCjKbz/86lMLAzMMA0MTAwMOC1Ea6JgYFB9pPwncbMg6owOaY1p3pk15zqkcWnie8j63ddY18nZHmWI2eW3vzN/Jf168c3UfGuHathAXHl+7lkBnYGBtafDP8NVd3jQ8xKHiNrZMyeqPPtE/9vTgYGBgb1H4oHlHXt43ZfWfDwNzsDIwMDA4POX831RXGrg9BdxLhob63VgTurjsAUsv5k+A9jC3/g/NCdfVoQm/+ZIu3qjhnyW3XABJANMNL19cYVcPBQrZpq9eyFwCdJmIT6D8UD5cmbHXFphKccI9Mgc84vTH9goYhPE4rGELOSx0bSjsUMDAwMunJ2FQST0+/fv1Hw5BWJbehi2DBgAHTKsWmiz+rJAAAAAElFTkSuQmCC)";
-    
     AASeriesElement *element1 = AASeriesElement.new
     .nameSet(@"Predefined symbol")
     .dataSet(@[@0.45, @0.43, @0.50, @0.55, @0.58, @0.62, @0.83, @0.39, @0.56, @0.67, @0.50, @0.34, @0.50, @0.67, @0.58, @0.29, @0.46, @0.23, @0.47, @0.46, @0.38, @0.56, @0.48, @0.36])
@@ -823,7 +843,7 @@
 }
 
 
-
+//https://github.com/AAChartModel/AAChartKit/issues/747
 - (AAChartModel *)customSpecialStyleDataLabelOfSingleDataElementChart {
     NSDictionary *gradientColorDic1 =
     [AAGradientColor gradientColorWithDirection:AALinearGradientDirectionToTop
@@ -870,6 +890,7 @@
                ]);
 }
 
+//https://github.com/AAChartModel/AAChartKit/issues/838
 - (AAChartModel *)customBarChartHoverColorAndSelectColor {
     return AAChartModel.new
     .chartTypeSet(AAChartTypeBar)
@@ -907,23 +928,22 @@
                              .haloSet(AAHalo.new
                                       .sizeSet(@130)
                                       .opacitySet(@0.8)
-                                      .attributesSet(@{
-                                          @"stroke-width": @50,
-                                          @"fill": @"#00BFFF",
-                                          @"stroke": @"#00FA9A"
-                                                     })))
+                                      .attributesSet(AASVGAttributes.new
+                                                     .strokeWidthSet(@50)
+                                                     .fillSet(@"#00BFFF")
+                                                     .strokeSet(@"#00FA9A"))))
                    .selectSet(AASelect.new
                               .haloSet(AAHalo.new
                                        .sizeSet(@130)
                                        .opacitySet(@1.0)
-                                       .attributesSet(@{
-                                           @"stroke-width": @150,
-                                           @"fill": AARgbaColor(138, 43, 226, 1.0),
-                                           @"stroke": AARgbaColor(30, 144, 255, 1.0)
-                                                      }))))
+                                       .attributesSet(AASVGAttributes.new
+                                                      .strokeWidthSet(@150)
+                                                      .fillSet(AARgbaColor(138, 43, 226, 1.0))
+                                                      .strokeSet(AARgbaColor(30, 144, 255, 1.0))))))
                ]);
 }
 
+//https://github.com/AAChartModel/AAChartKit/issues/1345
 - (AAChartModel *)customSplineChartMarkerStatesHoverStyle {
     return AAChartModel.new
     .chartTypeSet(AAChartTypeAreaspline)
@@ -1107,6 +1127,69 @@
                  ])
                ]);
 }
+
+//https://github.com/AAChartModel/AAChartKit/issues/1234
+- (AAChartModel *)doubleLayerDoubleColorsPieChart {
+    return AAChartModel.new
+    .chartTypeSet(AAChartTypePie)
+    .titleSet(@"浏览器市场占比历史对比")
+    .subtitleSet(@"无任何可靠依据的虚拟数据")
+    .dataLabelsEnabledSet(false)//是否直接显示扇形图数据
+    .yAxisTitleSet(@"摄氏度")
+    .legendEnabledSet(false)
+    .seriesSet(@[
+        AASeriesElement.new
+        .nameSet(@"Past")
+        .colorsSet(@[
+            AARgbaColor(255, 0, 0, 1.0),
+            AARgbaColor(255, 0, 0, 0.8),
+            AARgbaColor(255, 0, 0, 0.6),
+            AARgbaColor(255, 0, 0, 0.4),
+            AARgbaColor(255, 0, 0, 0.2),
+                   ])
+        .dataLabelsSet(AADataLabels.new
+                       .enabledSet(false))
+        .sizeSet((id)@"25%")//尺寸大小
+        .innerSizeSet(@"20%")//内部圆环半径大小占比
+        .borderWidthSet(@0)//描边的宽度
+        .allowPointSelectSet(false)//是否允许在点击数据点标记(扇形图点击选中的块发生位移)
+        .dataSet(@[
+            @[@"Firefox Past",    @336.2],
+            @[@"Chrome Past",     @126.8],
+            @[@"Safari Past",     @188.5],
+            @[@"Opera Past",      @146.0],
+            @[@"Others Past",     @223.0],
+                 ]),
+        AASeriesElement.new
+        .nameSet(@"Now")
+        .colorsSet(@[
+            AARgbaColor(30, 144, 255, 1.0),
+            AARgbaColor(30, 144, 255, 0.8),
+            AARgbaColor(30, 144, 255, 0.6),
+            AARgbaColor(30, 144, 255, 0.4),
+            AARgbaColor(30, 144, 255, 0.2),
+                   ])
+        .dataLabelsSet(AADataLabels.new
+                       .enabledSet(true)
+                       .formatSet(@"<b>{point.name}</b>: {point.percentage:.1f} %")
+                       .alignToSet(@"plotEdges")
+                       .connectorShapeSet(@"crookedLine")
+                       .crookDistanceSet(@"90%")
+                       .styleSet(AAStyleColor(AARgbaColor(30, 144, 255, 1.0))))
+        .sizeSet((id)@"80%")//尺寸大小
+        .innerSizeSet(@"45%")//内部圆环半径大小占比
+        .borderWidthSet(@0)//描边的宽度
+        .allowPointSelectSet(false)//是否允许在点击数据点标记(扇形图点击选中的块发生位移)
+        .dataSet(@[
+            @[@"Firefox Now",    @926.8],
+            @[@"Chrome Now",     @336.2],
+            @[@"Safari Now",     @388.5],
+            @[@"Opera Now",      @446.0],
+            @[@"Others Now",     @223.0],
+                 ])
+               ]);
+}
+
 
 //GitHub issue https://github.com/AAChartModel/AAChartKit/issues/903
 - (AAChartModel *)disableSomeOfLinesMouseTrackingEffect {
@@ -1315,6 +1398,7 @@
                ]);
 }
 
+// https://github.com/AAChartModel/AAChartKit/issues/1318
 // Refer to https://api.highcharts.com.cn/highcharts#plotOptions.spline.marker.states.hover.enabled
 - (AAChartModel *)disableSplineChartMarkerHoverEffect {
     return AAChartModel.new
@@ -1341,6 +1425,128 @@
                ]);
 }
 
+//https://github.com/AAChartModel/AAChartKit/issues/1203
+- (AAChartModel *)configureMaxAndMinDataLabelsForChart {
+    AADataLabels *aaDataLabels = AADataLabels.new
+    .enabledSet(true)
+    .formatSet(@"{y} 美元")
+    .shapeSet(@"callout")
+    .styleSet(AAStyleColorSizeWeight(AAColor.redColor, 15, AAChartFontWeightTypeBold))
+    .backgroundColorSet(AAColor.whiteColor)// white color
+    .borderColorSet(AAColor.redColor)// red color
+    .borderRadiusSet(@1.5)
+    .borderWidthSet(@1.3);
+    
+    AADataElement *minData = AADataElement.new
+    .dataLabelsSet(aaDataLabels)
+    .ySet(@2.5);
+    
+    AADataElement *maxData = AADataElement.new
+    .dataLabelsSet(aaDataLabels)
+    .ySet(@49.5);
+    
+    return AAChartModel.new
+    .chartTypeSet(AAChartTypeSpline)
+    .dataLabelsEnabledSet(false)//是否显示值
+    .tooltipEnabledSet(false)
+    .markerRadiusSet(@0)
+    .xAxisVisibleSet(false)
+    .yAxisVisibleSet(false)
+    .seriesSet(@[
+        AASeriesElement.new
+        .nameSet(@"Show The Max and Min values Data Labels")
+        .lineWidthSet(@7)
+        .dataSet(@[@7.0, @6.9, minData, @14.5, @18.2, maxData, @5.2, @26.5, @23.3, @26.5, @13.9, @9.6])
+        .colorSet((id)AAGradientColor.oceanBlueColor)
+               ]);
+}
+
+//https://github.com/AAChartModel/AAChartKit/issues/1201
+- (AAChartModel *)customVerticalXAxisCategoriesLabelsByHTMLBreakLineTag {
+    return AAChartModel.new
+    .chartTypeSet(AAChartTypeArea)
+    .categoriesSet(@[
+        @"孤<br>岛<br>危<br>机",
+        @"使<br>命<br>召<br>唤",
+        @"荣<br>誉<br>勋<br>章",
+        @"狙<br>击<br>精<br>英",
+        @"神<br>秘<br>海<br>域",
+        @"最<br>后<br>生<br>还<br>者",
+        @"巫<br>师<br>3<br>狂<br>猎",
+        @"对<br>马<br>之<br>魂",
+        @"蝙<br>蝠<br>侠<br>阿<br>甘<br>骑<br>士<br>",
+        @"地<br>狱<br>边<br>境",
+        @"闪<br>客",
+        @"忍<br>者<br>之<br>印"])
+    .tooltipEnabledSet(false)
+    .borderRadiusSet(@3)
+    .markerSymbolStyleSet(AAChartSymbolStyleTypeInnerBlank)
+    .xAxisLabelsStyleSet(AAStyleColorSizeWeight(AAColor.blackColor, 16, AAChartFontWeightTypeBold))
+    .seriesSet(@[
+        AASeriesElement.new
+        .nameSet(@"2017")
+        .dataSet(@[@7.0, @6.9, @9.5, @14.5, @18.2, @21.5, @25.2, @26.5, @23.3, @18.3, @13.9, @9.6]),
+        AASeriesElement.new
+        .nameSet(@"2018")
+        .dataSet(@[@0.2, @0.8, @5.7, @11.3, @17.0, @22.0, @24.8, @24.1, @20.1, @14.1, @8.6, @2.5]),
+        AASeriesElement.new
+        .nameSet(@"2019")
+        .dataSet(@[@0.9, @0.6, @3.5, @8.4, @13.5, @17.0, @18.6, @17.9, @14.3, @9.0, @3.9, @1.0]),
+        AASeriesElement.new
+        .nameSet(@"2020")
+        .dataSet(@[@3.9, @4.2, @5.7, @8.5, @11.9, @15.2, @17.0, @16.6, @14.2, @10.3, @6.6, @4.8]),
+               ]);
+}
+
+//https://github.com/AAChartModel/AAChartKit/issues/1269
+- (AAChartModel *)noMoreGroupingAndOverlapEachOtherColumnChart {
+    return AAChartModel.new
+        .chartTypeSet(AAChartTypeColumn)
+        .categoriesSet(@[@"11/23",@"11/24", @"11/25",@"11/26",@"11/27",@"11/28",@"11/29"])
+        .yAxisTickPositionsSet(@[@0, @10, @20, @30, @40, @50])
+        .yAxisMaxSet(@50)
+        .yAxisMinSet(@0)
+        .borderRadiusSet(@5)
+        .seriesSet(@[
+            AAColumn.new
+                .nameSet(@"总做题")
+                .colorSet(@"#D8D8D8")
+                .dataSet(@[@30, @20, @28, @40, @42 ,@48, @50])
+                .groupingSet(false)
+            ,
+            AAColumn.new
+                .nameSet(@"正确做题")
+                .colorSet(@"#00D9CD")
+                .dataSet(@[@28, @18, @26, @40, @40, @46, @39])
+        ]);
+}
+
+//https://github.com/AAChartModel/AAChartKit/issues/1271
+- (AAChartModel *)noMoreGroupingAndNestedColumnChart {
+    return AAChartModel.new
+        .chartTypeSet(AAChartTypeColumn)
+        .categoriesSet(@[@"11/23",@"11/24", @"11/25",@"11/26",@"11/27",@"11/28",@"11/29"])
+        .yAxisTickPositionsSet(@[@0, @10, @20, @30, @40, @50])
+        .yAxisMaxSet(@50)
+        .yAxisMinSet(@0)
+        .borderRadiusSet(@5)
+        .seriesSet(@[
+            AAColumn.new
+                .nameSet(@"总目标")
+                .colorSet(@"DeepSkyBlue")
+                .dataSet(@[@30, @20, @28, @40, @42 ,@48, @50])
+                .groupingSet(false)
+                .pointPaddingSet(@0.05)
+            ,
+            AAColumn.new
+                .nameSet(@"完成度")
+                .colorSet(@"#FF3030") //Firebrick1 color
+                .dataSet(@[@28, @18, @26, @40, @40, @46, @39])
+                .groupingSet(false)
+                .pointPaddingSet(@0.2)
+        ]);
+}
+
 //https://github.com/AAChartModel/AAChartKit/issues/842
 - (AAChartModel *)topRoundedCornersStackingColumnChart {
     return AAChartModel.new
@@ -1364,6 +1570,633 @@
         .dataSet(@[@1.56, @1.91, @2.45, @3.87, @3.24, @4.90, @4.61, @4.10, @4.17, @3.85, @4.17, @3.46, @3.46, @3.55, @3.50, @4.13, @2.58, @2.28]),
                ]);
 }
+
+
+//https://github.com/AAChartModel/AAChartKit-Swift/issues/323
+//https://github.com/AAChartModel/AAChartKit-Swift/issues/346
+//https://github.com/highcharts/rounded-corners
+- (AAChartModel *)freeStyleRoundedCornersStackingColumnChart {
+    return AAChartModel.new
+        .chartTypeSet(AAChartTypeColumn)
+        .stackingSet(AAChartStackingTypePercent)
+        .titleSet(@"Free-Style Rounded Corners Stacking Column Chart")
+        .colorsThemeSet(@[
+            [AAGradientColor gradientColorWithStartColorString:AARgbColor(128, 255, 165) endColorString:AARgbColor(1  , 191, 236)],
+            [AAGradientColor gradientColorWithStartColorString:AARgbColor(0  , 221, 255) endColorString:AARgbColor(77 , 119, 255)],
+            [AAGradientColor gradientColorWithStartColorString:AARgbColor(55 , 162, 255) endColorString:AARgbColor(116, 21 , 219)],
+            [AAGradientColor gradientColorWithStartColorString:AARgbColor(255, 0  , 135) endColorString:AARgbColor(135, 0  , 157)],
+            [AAGradientColor gradientColorWithStartColorString:AARgbColor(255, 191, 0  ) endColorString:AARgbColor(224, 62 , 76 )],
+        ])
+        .seriesSet(@[
+            AASeriesElement.new
+                .nameSet(@"Tokyo Hot")
+                .borderRadiusTopLeftSet((id)@"50%")
+                .borderRadiusTopRightSet((id)@"50%")
+                .dataSet(@[@2.10, @2.54, @2.78, @3.62, @4.41, @4.09, @3.83, @4.47, @4.20, @3.94, @3.80, @3.58, @3.19, @4.30, @3.69, @3.52, @3.02, @3.30]),
+            
+            AASeriesElement.new
+                .nameSet(@"Berlin Hot")
+                .borderRadiusBottomLeftSet((id)@"50%")
+                .borderRadiusBottomRightSet((id)@"50%")
+                .dataSet(@[@1.56, @1.91, @2.45, @3.87, @3.24, @4.90, @4.61, @4.10, @4.17, @3.85, @4.17, @3.46, @3.46, @3.55, @3.50, @4.13, @2.58, @2.28]),
+            
+            AASeriesElement.new
+                .nameSet(@"Beijing Hot")
+                .borderRadiusTopLeftSet((id)@"50%")
+                .borderRadiusBottomRightSet((id)@"50%")
+                .dataSet(@[@1.16, @1.67, @2.64, @2.86, @3.00, @3.21, @4.14, @4.07, @3.68, @3.11, @3.41, @3.25, @3.32, @3.07, @3.92, @3.05, @2.18, @3.24]),
+            
+            AASeriesElement.new
+                .nameSet(@"London Hot")
+                .borderRadiusTopRightSet((id)@"50%")
+                .borderRadiusBottomLeftSet((id)@"50%")
+                .dataSet(@[@5.59, @3.09, @4.09, @6.14, @5.33, @6.05, @5.71, @6.22, @6.56, @4.75, @5.27, @6.02, @5.22, @5.77, @6.19, @5.68, @4.33, @5.48]),
+            
+            AASeriesElement.new
+                .nameSet(@"NewYork Hot")
+                .borderRadiusSet(@20)
+                .dataSet(@[@2.10, @2.54, @2.78, @3.62, @4.41, @4.09, @3.83, @4.47, @4.20, @3.94, @3.80, @3.58, @3.19, @4.30, @3.69, @3.52, @3.02, @3.30]),
+        ]);
+}
+
+
+//https://github.com/AAChartModel/AAChartKit-Swift/issues/365
+- (AAChartModel *)customColumnChartBorderStyleAndStatesHoverColor {
+    return AAChartModel.new
+        .chartTypeSet(AAChartTypeColumn)
+        .stackingSet(AAChartStackingTypeNormal)
+        .colorsThemeSet(@[AAColor.darkGrayColor, AAColor.lightGrayColor])//Colors theme
+        .categoriesSet(@[
+            @"January", @"February", @"March", @"April", @"May", @"June",
+            @"July", @"August", @"September", @"October", @"November", @"December"
+        ])
+        .seriesSet(@[
+            AASeriesElement.new
+                .nameSet(@"Berlin Hot")
+                .borderColorSet(AAColor.whiteColor)
+                .borderWidthSet(@3)
+                .borderRadiusSet(@10)
+                .statesSet(AAStates.new
+                    .hoverSet(AAHover.new
+                        .colorSet(AAColor.redColor)))
+                .dataSet(@[@7.0, @6.9, @9.5, @14.5, @18.2, @21.5, @25.2, @26.5, @23.3, @18.3, @13.9, @9.6]),
+            
+            AASeriesElement.new
+                .nameSet(@"Beijing Hot")
+                .borderColorSet(AAColor.whiteColor)
+                .borderWidthSet(@3)
+                .borderRadiusSet(@10)
+                .statesSet(AAStates.new
+                    .hoverSet(AAHover.new
+                        .colorSet(@"dodgerblue")))// Dodgerblue／道奇藍／#1e90ff十六进制颜色代码
+                .dataSet(@[@0.2, @0.8, @5.7, @11.3, @17.0, @22.0, @24.8, @24.1, @20.1, @14.1, @8.6, @2.5]),
+        ]);
+}
+
+
+//https://github.com/AAChartModel/AAChartKit/issues/1291
+- (AAChartModel *)customLineChartWithColorfulMarkersAndLines {
+    return AAChartModel.new
+    .chartTypeSet(AAChartTypeLine)
+    .titleSet(@"Custom Line Chart With Colorful Markers And Lines")
+    .markerRadiusSet(@18.0)//marker点半径为8个像素
+    .yAxisLineWidthSet(@0)
+    .yAxisGridLineStyleSet([AALineStyle styleWithWidth:@0])
+    .legendEnabledSet(false)
+    .seriesSet(@[
+        AASeriesElement.new
+            .nameSet(@"Tokyo Hot")
+            .lineWidthSet(@5.0)
+            .markerSet(AAMarker.new
+                       .statesSet(AAMarkerStates.new
+                                  .hoverSet(AAMarkerHover.new
+                                            .radiusSet(@40)
+                                            .lineWidthSet(@5))))
+            .dataSet(@[
+                @2, @4, @8, @16, @32, @64, @128,
+                AADataElement.new
+                    .ySet(@256.0)
+                    .colorSet(AAColor.redColor)
+            ])
+            .zoneAxisSet(@"x")
+            .zonesSet(@[
+                AAZonesElement.new
+                    .valueSet(@1)
+                    .colorSet(AAColor.redColor),
+                AAZonesElement.new
+                    .valueSet(@2)
+                    .colorSet(AAColor.orangeColor),
+                AAZonesElement.new
+                    .valueSet(@3)
+                    .colorSet(AAColor.yellowColor),
+                AAZonesElement.new
+                    .valueSet(@4)
+                    .colorSet(AAColor.greenColor),
+                AAZonesElement.new
+                    .valueSet(@5)
+                    .colorSet(AAColor.cyanColor),
+                AAZonesElement.new
+                    .valueSet(@6)
+                    .colorSet(AAColor.blueColor),
+                AAZonesElement.new
+                    .valueSet(@7)
+                    .colorSet(AAColor.purpleColor),
+            ])
+        ,
+    ]);
+}
+
+//https://github.com/AAChartModel/AAChartKit/issues/1291
+//https://github.com/AAChartModel/AAChartKit/issues/1293
+- (AAChartModel *)customLineChartWithColorfulMarkersAndLines2 {
+    return AAChartModel.new
+    .chartTypeSet(AAChartTypeLine)
+    .titleSet(@"Custom Line Chart With Colorful Markers And Lines")
+    .markerRadiusSet(@25.0)//marker点半径为8个像素
+    .markerSymbolSet(AAChartSymbolTypeCircle)
+    .yAxisLineWidthSet(@0)
+    .yAxisGridLineStyleSet([AALineStyle styleWithWidth:@0])
+    .legendEnabledSet(true)
+    .stackingSet(AAChartStackingTypeNormal)
+    .seriesSet(@[
+        AASeriesElement.new
+            .nameSet(AAColor.blueColor)
+            .lineWidthSet(@20.0)
+            .dataSet(@[
+                @2048, @1024, @1024, @1024, @1024,
+                AADataElement.new
+                    .ySet(@2048)
+                    .colorSet(AARgbaColor(30, 144, 255, 1.0)),
+            ])
+            .zoneAxisSet(@"x")
+            .zonesSet(@[
+                AAZonesElement.new
+                    .valueSet(@1)
+                    .colorSet(AARgbaColor(30, 144, 255, 1.0)),
+                AAZonesElement.new
+                    .valueSet(@2)
+                    .colorSet(AARgbaColor(30, 144, 255, 0.8)),
+                AAZonesElement.new
+                    .valueSet(@3)
+                    .colorSet(AARgbaColor(30, 144, 255, 0.6)),
+                AAZonesElement.new
+                    .valueSet(@4)
+                    .colorSet(AARgbaColor(30, 144, 255, 0.4)),
+                AAZonesElement.new
+                    .valueSet(@5)
+                    .colorSet(AARgbaColor(30, 144, 255, 0.2)),
+            ])
+        ,
+        AASeriesElement.new
+            .nameSet(AAColor.redColor)
+            .lineWidthSet(@20.0)
+            .dataSet(@[
+                @2048, @1024, @1024, @1024, @1024,
+                AADataElement.new
+                    .ySet(@2048)
+                    .colorSet(AARgbaColor(255, 0, 0, 1.0)),
+            ])
+            .zoneAxisSet(@"x")
+            .zonesSet(@[
+                AAZonesElement.new
+                    .valueSet(@1)
+                    .colorSet(AARgbaColor(255, 0, 0, 1.0)),
+                AAZonesElement.new
+                    .valueSet(@2)
+                    .colorSet(AARgbaColor(255, 0, 0, 0.8)),
+                AAZonesElement.new
+                    .valueSet(@3)
+                    .colorSet(AARgbaColor(255, 0, 0, 0.6)),
+                AAZonesElement.new
+                    .valueSet(@4)
+                    .colorSet(AARgbaColor(255, 0, 0, 0.4)),
+                AAZonesElement.new
+                    .valueSet(@5)
+                    .colorSet(AARgbaColor(255, 0, 0, 0.2)),
+            ])
+        ,
+        AASeriesElement.new
+            .nameSet(AAColor.yellowColor)
+            .lineWidthSet(@20.0)
+            .dataSet(@[
+                @2048, @1024, @1024, @1024, @1024,
+                AADataElement.new
+                    .ySet(@2048)
+                    .colorSet(AARgbaColor(255, 215, 0, 1.0)),
+            ])
+            .zoneAxisSet(@"x")
+            .zonesSet(@[
+                AAZonesElement.new
+                    .valueSet(@1)
+                    .colorSet(AARgbaColor(255, 215, 0, 1.0)),
+                AAZonesElement.new
+                    .valueSet(@2)
+                    .colorSet(AARgbaColor(255, 215, 0, 0.8)),
+                AAZonesElement.new
+                    .valueSet(@3)
+                    .colorSet(AARgbaColor(255, 215, 0, 0.6)),
+                AAZonesElement.new
+                    .valueSet(@4)
+                    .colorSet(AARgbaColor(255, 215, 0, 0.4)),
+                AAZonesElement.new
+                    .valueSet(@5)
+                    .colorSet(AARgbaColor(255, 215, 0, 0.2)),
+            ])
+        ,
+        AASeriesElement.new
+            .nameSet(AAColor.greenColor)
+            .lineWidthSet(@20.0)
+            .dataSet(@[
+                @2048, @1024, @1024, @1024, @1024,
+                AADataElement.new
+                    .ySet(@2048)
+                    .colorSet(AARgbaColor(50, 205, 50, 1.0)),
+            ])
+            .zoneAxisSet(@"x")
+            .zonesSet(@[
+                AAZonesElement.new
+                    .valueSet(@1)
+                    .colorSet(AARgbaColor(50, 205, 50, 1.0)),
+                AAZonesElement.new
+                    .valueSet(@2)
+                    .colorSet(AARgbaColor(50, 205, 50, 0.8)),
+                AAZonesElement.new
+                    .valueSet(@3)
+                    .colorSet(AARgbaColor(50, 205, 50, 0.6)),
+                AAZonesElement.new
+                    .valueSet(@4)
+                    .colorSet(AARgbaColor(50, 205, 50, 0.4)),
+                AAZonesElement.new
+                    .valueSet(@5)
+                    .colorSet(AARgbaColor(50, 205, 50, 0.2)),
+            ])
+        ,
+        AASeriesElement.new
+            .nameSet(AAColor.purpleColor)
+            .lineWidthSet(@20.0)
+            .dataSet(@[
+                @2048, @1024, @1024, @1024, @1024,
+                AADataElement.new
+                    .ySet(@2048)
+                    .colorSet(AARgbaColor(138, 43, 226, 1.0)),
+            ])
+            .zoneAxisSet(@"x")
+            .zonesSet(@[
+                AAZonesElement.new
+                    .valueSet(@1)
+                    .colorSet(AARgbaColor(138, 43, 226, 1.0)),
+                AAZonesElement.new
+                    .valueSet(@2)
+                    .colorSet(AARgbaColor(138, 43, 226, 0.8)),
+                AAZonesElement.new
+                    .valueSet(@3)
+                    .colorSet(AARgbaColor(138, 43, 226, 0.6)),
+                AAZonesElement.new
+                    .valueSet(@4)
+                    .colorSet(AARgbaColor(138, 43, 226, 0.4)),
+                AAZonesElement.new
+                    .valueSet(@5)
+                    .colorSet(AARgbaColor(138, 43, 226, 0.2)),
+            ])
+        ,
+    ]);
+}
+
+//https://github.com/AAChartModel/AAChartKit/issues/1294
+- (AAChartModel *)drawLineChartWithPointsCoordinates {
+    NSArray *dataArr = @[
+        @[@0, @200],
+        @[@0, @300],
+        @[@0, @400],
+        @[@1, @100],
+        @[@2, @120],
+        @[@3, @130]
+    ];
+    
+    return AAChartModel.new
+    .chartTypeSet(AAChartTypeScatter)
+    .titleSet(@"Draw Line Chart With Points Coordinates")
+    .markerSymbolSet(AAChartSymbolTypeCircle)
+    .markerSymbolStyleSet(AAChartSymbolStyleTypeBorderBlank)
+    .markerRadiusSet(@8)
+    .colorsThemeSet(@[AAColor.redColor])
+    .seriesSet(@[
+        AASeriesElement.new
+            .typeSet(AAChartTypeLine)
+            .enableMouseTrackingSet(false)
+            .showInLegendSet(false)
+            .markerSet(AAMarker.new
+                       .enabledSet(false))
+            .statesSet(AAStates.new
+                       .inactiveSet(AAInactive.new
+                                    .enabledSet(false)))
+            .dataSet(dataArr),
+        AASeriesElement.new
+            .nameSet(@"Red Dot")
+            .typeSet(AAChartTypeScatter)
+            .dataSet(dataArr),
+    ]);
+}
+
+//https://github.com/AAChartModel/AAChartKit/issues/1351
+- (AAChartModel *)configureSpecialStyleColumnForNegativeDataMixedPositiveData {
+    NSArray *categoriesArr = @[
+        @"立春", @"雨水", @"惊蛰", @"春分", @"清明", @"谷雨", @"立夏", @"小满", @"芒种", @"夏至", @"小暑", @"大暑",
+        @"立秋", @"处暑", @"白露", @"秋分", @"寒露", @"霜降", @"立冬", @"小雪", @"大雪", @"冬至", @"小寒", @"大寒"
+    ];
+    
+    NSArray *dataArr = @[
+        @-70, @-69, @-25, @-145, @-182, @-215, @-52, @-265, @-233, @-453, @-139, @-96,
+        @+70, @+69, @+25, @+145, @+182, @+215, @+52, @+265, @+233, @+453, @+139, @+96,
+    ];
+    NSMutableArray *newDataArr = [NSMutableArray arrayWithCapacity:dataArr.count];
+    
+    for (NSNumber *  _Nonnull dataElement in dataArr) {
+        AADataLabels *aaDataLabels = AADataLabels.new
+            .enabledSet(true)
+            .verticalAlignSet(AAChartVerticalAlignTypeMiddle)
+            .xSet(@0)
+            .ySet(@-10);
+        
+        NSInteger dataElementValue = dataElement.intValue;
+        if (dataElementValue < 0) {
+            AADataElement *negativeDataElement = AADataElement.new
+            .ySet(@(-dataElementValue))
+            .colorSet(AAColor.greenColor)
+            .dataLabelsSet(aaDataLabels
+                           .formatSet(@"-{y} 美元")
+                           .styleSet(AAStyleColorSizeWeight(AAColor.greenColor, 11, AAChartFontWeightTypeThin)));
+            [newDataArr addObject:negativeDataElement];
+        } else {
+            AADataElement *positiveDataElement = AADataElement.new
+            .ySet(@(+dataElementValue))
+            .colorSet(AAColor.redColor)
+            .dataLabelsSet(aaDataLabels
+                           .formatSet(@"+{y} 美元")
+                           .styleSet(AAStyleColorSizeWeight(AAColor.redColor, 11, AAChartFontWeightTypeThin)));
+            [newDataArr addObject:positiveDataElement];
+        }
+    }
+    
+    return AAChartModel.new
+    .chartTypeSet(AAChartTypeColumn)
+    .categoriesSet(categoriesArr)
+    .tooltipEnabledSet(false)
+    .yAxisVisibleSet(false)
+    .seriesSet(@[
+        AASeriesElement.new
+        .nameSet(@"虚构数据")
+        .dataSet(newDataArr)
+               ]);
+}
+
+
+//https://github.com/AAChartModel/AAChartKit-Swift/issues/389
+- (AAChartModel *)configureMultiLevelStopsArrGradientColorAreasplineMixedLineChart {
+    NSMutableArray *randomNumArrA = [NSMutableArray array];
+    NSMutableArray *randomNumArrB = [NSMutableArray array];
+    double y1 = 0.0;
+    double y2 = 0.0;
+    int Q = arc4random() % 50;
+    int range = 129;
+    for (int x = 0; x < range; x++) {
+        y1 = sin(Q * (x * M_PI / 180)) + x * 2.0 * 0.01;
+        y2 = cos(Q * (x * M_PI / 180)) + x * 3.0 * 0.01;
+        [randomNumArrA addObject:@(y1)];
+        [randomNumArrB addObject:@(y2)];
+    }
+    
+    NSArray *redStopsArr = @[
+        @[@0.0, AARgbaColor(255, 0, 0, 1.0)],//颜色字符串设置支持十六进制类型和 rgba 类型
+        @[@0.2, AARgbaColor(255, 0, 0, 0.2)],
+        @[@0.4, AARgbaColor(255, 0, 0, 0.1)],
+        @[@0.6, AARgbaColor(255, 0, 0, 0.05)],
+        @[@0.8, AARgbaColor(255, 0, 0, 0.01)],
+        @[@1.0, AAColor.clearColor]
+    ];
+    
+    NSDictionary *gradientRedColorDic = [AAGradientColor gradientColorWithDirection:AALinearGradientDirectionToBottom
+                                                                         stopsArray:redStopsArr];
+    
+    return AAChartModel.new
+        .chartTypeSet(AAChartTypeAreaspline)
+        .stackingSet(AAChartStackingTypeNormal)
+        .backgroundColorSet(AAColor.blackColor)
+        .colorsThemeSet(@[@"#1e90ff",@"#04d69f",@"#ef476f",@"#ffd066",])
+        .dataLabelsEnabledSet(false)
+        .markerSymbolSet(AAChartSymbolTypeCircle)
+        .markerRadiusSet(@5)
+        .markerSymbolStyleSet(AAChartSymbolStyleTypeInnerBlank)
+        .xAxisGridLineStyleSet([AALineStyle styleWithWidth:@0.5])
+        .yAxisGridLineStyleSet([AALineStyle styleWithWidth:@0.5])
+        .seriesSet(@[
+            AASeriesElement.new
+                .nameSet(@"2017")
+                .typeSet(AAChartTypeSpline)
+                .lineWidthSet(@6)
+                .dataSet(randomNumArrA),
+            AASeriesElement.new
+                .nameSet(@"2018")
+                .typeSet(AAChartTypeSpline)
+                .lineWidthSet(@6)
+                .dataSet(randomNumArrB),
+            AASeriesElement.new
+                .nameSet(@"2020")
+                .fillColorSet((id)gradientRedColorDic)
+                .lineWidthSet(@6)
+                .thresholdSet(@(-4))
+                .dataSet(randomNumArrA),
+        ]);
+}
+
+
+
+//https://github.com/AAChartModel/AAChartKit/issues/1401
+- (AAChartModel *)connectNullsForSingleAASeriesElement {
+    NSArray *dataArr = @[
+        @0.45, NSNull.new, NSNull.new,
+        @0.55, @0.58, @0.62, NSNull.new, NSNull.new,
+        @0.56, @0.67, @0.50, @0.34, @0.50, NSNull.new, NSNull.new, NSNull.new, NSNull.new,
+        @0.23, @0.47, @0.46, @0.38, @0.56, @0.48, @0.36, NSNull.new, NSNull.new, NSNull.new, NSNull.new, NSNull.new, NSNull.new, NSNull.new, NSNull.new,
+        @0.74, @0.66, @0.65, @0.71, @0.59, @0.65, @0.77, @0.52, @0.53, @0.58, @0.53,
+    ];
+    
+    return AAChartModel.new
+        .chartTypeSet(AAChartTypeSpline)
+        .subtitleSet(@"虚拟数据")
+        .colorsThemeSet(@[@"#1e90ff", @"#ef476f", @"#ffd066", @"#04d69f"])
+        .yAxisTitleSet(@"摄氏度")
+        .dataLabelsEnabledSet(false)
+        .yAxisGridLineStyleSet([AALineStyle styleWithWidth:@0])
+        .stackingSet(AAChartStackingTypeNormal)
+        .markerRadiusSet(@8)
+        .markerSymbolStyleSet(AAChartSymbolStyleTypeBorderBlank)
+        .seriesSet(@[
+            AASeriesElement.new
+                .nameSet(@"Do NOT Connect Nulls")
+                .lineWidthSet(@5)
+                .connectNullsSet(@false)
+                .dataSet(dataArr),
+            AASeriesElement.new
+                .nameSet(@"Connect Nulls")
+                .lineWidthSet(@5)
+                .connectNullsSet(@true)
+                .dataSet(dataArr),
+            AASeriesElement.new
+                .nameSet(@"Do NOT Connect Nulls")
+                .lineWidthSet(@5)
+                .connectNullsSet(@false)
+                .dataSet(dataArr),
+            AASeriesElement.new
+                .nameSet(@"Connect Nulls")
+                .lineWidthSet(@5)
+                .connectNullsSet(@true)
+                .dataSet(dataArr)
+        ]);
+}
+
+
+- (NSArray *)generateRandomNumberArrayWithLength:(NSUInteger)length
+                                     randomRange:(NSUInteger)randomRange
+                                          minNum:(NSUInteger)minNum {
+    NSMutableArray *randomNumArrA = [NSMutableArray array];
+    for (NSUInteger x = 0; x < length; x++) {
+        NSUInteger randomNum = arc4random() % randomRange + minNum;
+        [randomNumArrA addObject:@(randomNum)];
+    }
+    return randomNumArrA;
+}
+
+
+- (NSArray *)generateRandomNumberMixedNullArrayWithLength:(NSUInteger)length
+                                              randomRange:(NSUInteger)randomRange
+                                                   minNum:(NSUInteger)minNum {
+    NSMutableArray *randomNumArrA = [NSMutableArray array];
+    for (NSUInteger x = 0; x < length; x++) {
+        if ((100 < x && x < 150) || (300 < x && x < 350)) {
+            NSUInteger randomNum = arc4random() % randomRange + minNum;
+            [randomNumArrA addObject:@(randomNum)];
+        } else {
+            [randomNumArrA addObject:NSNull.null];
+        }
+    }
+    return randomNumArrA;
+}
+
+//https://github.com/AAChartModel/AAChartKit/issues/1419
+- (AAChartModel *)lineChartsWithLargeDifferencesInTheNumberOfDataInDifferentSeriesElement {
+    return AAChartModel.new
+        .chartTypeSet(AAChartTypeLine)
+        .backgroundColorSet(AAColor.blackColor)
+        .colorsThemeSet(@[@"#1e90ff",@"#04d69f",@"#ef476f",@"#ffd066",])
+        .dataLabelsEnabledSet(false)
+        .markerRadiusSet(@0)
+        .seriesSet(@[
+            AASeriesElement.new
+                .nameSet(@"2017")
+                .lineWidthSet(@6)
+                .dataSet([self generateRandomNumberMixedNullArrayWithLength:3550 randomRange:5 minNum:100]),
+            AASeriesElement.new
+                .nameSet(@"2018")
+                .lineWidthSet(@6)
+                .dataSet([self generateRandomNumberArrayWithLength:3550 randomRange:100 minNum:200]),
+            AASeriesElement.new
+                .nameSet(@"2019")
+                .lineWidthSet(@6)
+                .dataSet([self generateRandomNumberArrayWithLength:3550 randomRange:150 minNum:400]),
+            AASeriesElement.new
+                .nameSet(@"2020")
+                .lineWidthSet(@6)
+                .dataSet([self generateRandomNumberArrayWithLength:3550 randomRange:150 minNum:600]),
+        ]);
+}
+
+
+//https://github.com/AAChartModel/AAChartCore-Kotlin/issues/149
+- (AAChartModel *)customAreasplineChartWithColorfulGradientColorZones {
+    NSArray *redStopsArr = @[
+        @[@0.0, AARgbaColor(255, 0, 0, 1.0)],//颜色字符串设置支持十六进制类型和 rgba 类型
+        @[@1.0, AAColor.clearColor]
+    ];
+    
+    NSArray *greenStopsArr = @[
+        @[@0.0, AARgbaColor(0, 255, 0, 1.0)],//颜色字符串设置支持十六进制类型和 rgba 类型
+        @[@1.0, AAColor.clearColor]
+    ];
+    
+    NSArray *blueStopsArr = @[
+        @[@0.0, AARgbaColor(0, 0, 255, 1.0)],//颜色字符串设置支持十六进制类型和 rgba 类型
+        @[@1.0, AAColor.clearColor]
+    ];
+    
+    NSDictionary *redGradientColorDic = [AAGradientColor gradientColorWithDirection:AALinearGradientDirectionToBottom stopsArray:redStopsArr];
+    NSDictionary *greenGradientColorDic = [AAGradientColor gradientColorWithDirection:AALinearGradientDirectionToBottom stopsArray:greenStopsArr];
+    NSDictionary *blueGradientColorDic = [AAGradientColor gradientColorWithDirection:AALinearGradientDirectionToBottom stopsArray:blueStopsArr];
+    
+    AADataElement *singleSpecialData = AADataElement.new
+        .markerSet(AAMarker.new
+                   .radiusSet(@8)//曲线连接点半径
+                   .symbolSet(AAChartSymbolTypeCircle)//曲线点类型："circle", "square", "diamond", "triangle","triangle-down"，默认是"circle"
+                   .fillColorSet(AAColor.whiteColor)//点的填充色(用来设置折线连接点的填充色)
+                   .lineWidthSet(@5)//外沿线的宽度(用来设置折线连接点的轮廓描边的宽度)
+                   //外沿线的颜色(用来设置折线连接点的轮廓描边颜色，当值为空字符串时，默认取数据点或数据列的颜色)
+                   .lineColorSet(@"#1E90FF")//道奇蓝
+                   )
+        .dataLabelsSet(AADataLabels.new
+                       .enabledSet(true)
+                       .allowOverlapSet(true)
+                       .useHTMLSet(true)
+                       .backgroundColorSet(AARgbaColor(65, 111, 166, 1.0))
+                       .borderRadiusSet(@10)
+                       .shapeSet(@"callout")
+                       .formatSet(@"{point.category}<br>{series.name}: {point.y} %")
+                       .styleSet(AAStyleColorSizeWeight(AAColor.whiteColor, 12, AAChartFontWeightTypeBold))
+                       .xSet(@-80).ySet(@(5))
+                       .alignSet(AAChartAlignTypeCenter)
+                       .verticalAlignSet(AAChartVerticalAlignTypeTop)
+                       .overflowSet(@"none")
+                       .cropSet(false)
+                       )
+        .ySet(@85.3);
+    
+    AAStyle *axisLabelsStyle = AAStyleColorSizeWeight(AAColor.whiteColor, 12, AAChartFontWeightTypeBold);
+    
+    return AAChartModel.new
+        .chartTypeSet(AAChartTypeAreaspline)
+        .backgroundColorSet(AAColor.blackColor)
+        .categoriesSet(@[
+            @"Jan", @"Feb", @"Mar", @"Apr", @"May", @"Jun",
+            @"Jul", @"Aug", @"Sep", @"Oct", @"Nov", @"Dec"
+        ])
+        .dataLabelsEnabledSet(false)
+        .legendEnabledSet(false)
+        .markerRadiusSet(@0)
+        .xAxisLabelsStyleSet(axisLabelsStyle)
+        .yAxisLabelsStyleSet(axisLabelsStyle)
+        .xAxisGridLineStyleSet([AALineStyle styleWithColor:AAColor.whiteColor dashStyle:AAChartLineDashStyleTypeLongDashDotDot width:@0.5])
+        .yAxisGridLineStyleSet([AALineStyle styleWithWidth:@0])
+        .seriesSet(@[
+            AASeriesElement.new
+                .nameSet(@"空气湿度")
+                .lineWidthSet(@6)
+                .zoneAxisSet(@"x")
+                .zonesSet(@[
+                    AAZonesElement.new
+                        .valueSet(@2)
+                        .colorSet(AAColor.redColor)
+                        .fillColorSet((id)redGradientColorDic ),
+                    AAZonesElement.new
+                        .valueSet(@5)
+                        .colorSet(AAColor.greenColor)
+                        .fillColorSet((id)greenGradientColorDic),
+                    AAZonesElement.new
+                        .colorSet(AAColor.blueColor)
+                        .fillColorSet((id)blueGradientColorDic),
+                ])
+                .dataSet(@[@56.5, @33.3, @85.3, @23.9, @29.6, @34.5, @28.2, @26.5, @15.2, @56.5, @33.3, singleSpecialData]),
+        ]);
+}
+
 
 @end
 

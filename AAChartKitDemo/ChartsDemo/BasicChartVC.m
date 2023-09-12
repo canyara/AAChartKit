@@ -22,7 +22,7 @@
  * -------------------------------------------------------------------------------
  * And if you want to contribute for this project, please contact me as well
  * GitHub        : https://github.com/AAChartModel
- * StackOverflow : https://stackoverflow.com/users/7842508/codeforu
+ * StackOverflow : https://stackoverflow.com/users/12302132/codeforu
  * JianShu       : https://www.jianshu.com/u/f1e6753d4254
  * SegmentFault  : https://segmentfault.com/u/huanghunbieguan
  *
@@ -57,7 +57,7 @@
     self.view.backgroundColor = [AAEasyTool colorWithHexString:@"#4b2b7f"];
 
     [self setUpTheSegmentedControls];
-    [self setUpTheSwitchs];
+    [self setUpTheSwitches];
     
     AAChartType chartType = [self configureTheChartType];
     self.title = [NSString stringWithFormat:@"%@ chart",chartType];
@@ -79,6 +79,7 @@
         case BasicChartVCChartTypeStepArea: return AAChartTypeArea;
         case BasicChartVCChartTypeScatter: return AAChartTypeScatter;
     }
+    return nil;
 }
 
 - (void)drawChart {
@@ -99,7 +100,7 @@
     _aaChartView.frame = CGRectMake(0, aaChartViewOriginY, chartViewWidth, chartViewHeight);
     _aaChartView.scrollEnabled = NO;//禁用 AAChartView 滚动效果
     _aaChartView.isClearBackgroundColor = YES;//设置 AAChartView 的背景色是否为透明
-    //    _aaChartView.delegate = self;
+//        _aaChartView.delegate = self;//解开注释(同时需要注释掉 block 方法), 可以测试一下获取交互事件回调的 delegate 方法
     [self.view addSubview:_aaChartView];
     [self setupChartViewEventHandlers];
 }
@@ -108,6 +109,24 @@
     //获取图表加载完成事件
     [_aaChartView didFinishLoadHandler:^(AAChartView *aaChartView) {
         NSLog(@"🚀🚀🚀🚀 AAChartView content did finish load!!!");
+    }];
+    
+    [_aaChartView clickEventHandler:^(AAChartView *aaChartView,
+                                      AAClickEventMessageModel *message) {
+            NSDictionary *messageDic = @{
+                @"category":message.category,
+                @"index":@(message.index),
+                @"name":message.name,
+                @"offset":message.offset,
+                @"x":message.x,
+                @"y":message.y
+            };
+            
+            NSString *str1 = [NSString stringWithFormat:@"🖱🖱🖱🖱 clicked point series element name: %@\n",
+                              message.name];
+            NSString *str2 = [NSString stringWithFormat:@"user finger clicked!!!,get the click event BLOCK message: %@",
+                              messageDic];
+            NSLog(@"%@%@",str1, str2);
     }];
     
     //获取图表上的手指点击及滑动事件
@@ -122,9 +141,9 @@
             @"y":message.y
         };
         
-        NSString *str1 = [NSString stringWithFormat:@"👌👌👌👌 selected point series element name: %@\n",
+        NSString *str1 = [NSString stringWithFormat:@"👌👌👌👌 move over point series element name: %@\n",
                           message.name];
-        NSString *str2 = [NSString stringWithFormat:@"user finger moved over!!!,get the move over event message: %@",
+        NSString *str2 = [NSString stringWithFormat:@"user finger moved over!!!,get the move over event BLOCK message: %@",
                           messageDic];
         NSLog(@"%@%@",str1, str2);
     }];
@@ -315,6 +334,22 @@
     NSLog(@"🔥 AAChartView content did finish load!!!");
 }
 
+- (void)aaChartView:(AAChartView *)aaChartView clickEventWithMessage:(AAClickEventMessageModel *)message {
+    NSDictionary *messageDic = @{
+        @"category":message.category,
+        @"index":@(message.index),
+        @"name":message.name,
+        @"offset":message.offset,
+        @"x":message.x,
+        @"y":message.y
+    };
+    NSString *str1 = [NSString stringWithFormat:@"🖱🖱🖱 clicked the point series element name: %@\n",
+                      message.name];
+    NSString *str2 = [NSString stringWithFormat:@"user finger clicked!!!,get the move over event DELEGATE message: %@",
+                      messageDic];
+    NSLog(@"%@%@",str1, str2);
+}
+
 - (void)aaChartView:(AAChartView *)aaChartView moveOverEventWithMessage:(AAMoveOverEventMessageModel *)message {
     NSDictionary *messageDic = @{
         @"category":message.category,
@@ -325,9 +360,9 @@
         @"y":message.y
     };
     
-    NSString *str1 = [NSString stringWithFormat:@"👌 selected point series element name: %@\n",
+    NSString *str1 = [NSString stringWithFormat:@"👌👌👌 move over the point series element name: %@\n",
                       message.name];
-    NSString *str2 = [NSString stringWithFormat:@"user finger moved over!!!,get the move over event message: %@",
+    NSString *str2 = [NSString stringWithFormat:@"user finger moved over!!!,get the move over event DELEGATE message: %@",
                       messageDic];
     NSLog(@"%@%@",str1, str2);
 }
@@ -356,19 +391,19 @@
             @[@"No stacking",
               @"Normal stacking",
               @"Percent stacking"],
-            @[@"Circle",
-              @"Square",
-              @"Diamond",
-              @"Triangle",
-              @"Triangle-down"]
+            @[@"◉ ◉ ◉",
+              @"■ ■ ■",
+              @"◆ ◆ ◆",
+              @"▲ ▲ ▲",
+              @"▼ ▼ ▼"]
         ];
         typeLabelNameArr = @[
             @"Stacking type selection",
-            @"Chart symbol type selection"
+            @"Maker symbols type selection"
         ];
     }
     
-    for (int i = 0; i < segmentedNamesArr.count; i++) {
+    for (NSUInteger i = 0; i < segmentedNamesArr.count; i++) {
         UISegmentedControl * segmentedControl = [[UISegmentedControl alloc]initWithItems:segmentedNamesArr[i]];
         segmentedControl.frame = CGRectMake(20,
                                             40 * i + (self.view.frame.size.height - 145),
@@ -379,7 +414,7 @@
         segmentedControl.selectedSegmentIndex = 0;
         segmentedControl.tag = i;
         [segmentedControl addTarget:self
-                             action:@selector(customsegmentedControlCellValueBeChanged:)
+                             action:@selector(customSegmentedControlCellValueBeChanged:)
                    forControlEvents:UIControlEventValueChanged];
         [self.view addSubview:segmentedControl];
         
@@ -396,8 +431,8 @@
     }
 }
 
-- (void)customsegmentedControlCellValueBeChanged:(UISegmentedControl *)segmentedControl {
-    NSInteger selectedSegmentIndex = segmentedControl.selectedSegmentIndex;
+- (void)customSegmentedControlCellValueBeChanged:(UISegmentedControl *)segmentedControl {
+    NSUInteger selectedSegmentIndex = (NSUInteger) segmentedControl.selectedSegmentIndex;
     
     switch (segmentedControl.tag) {
         case 0: {
@@ -434,7 +469,7 @@
     [self refreshTheChartView];
 }
 
-- (void)setUpTheSwitchs {
+- (void)setUpTheSwitches {
     NSArray *nameArr;
     if (_chartType == BasicChartVCChartTypeColumn || _chartType == BasicChartVCChartTypeBar) {
         nameArr = @[
@@ -457,7 +492,7 @@
     
     CGFloat switchWidth = (self.view.frame.size.width - 40) / nameArr.count;
     
-    for (int i = 0; i < nameArr.count; i++) {
+    for (NSUInteger i = 0; i < nameArr.count; i++) {
         UISwitch * switchView = [[UISwitch alloc]init];
         switchView.frame = CGRectMake(switchWidth * i + 20,
                                       self.view.frame.size.height - 70,

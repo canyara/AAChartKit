@@ -22,7 +22,7 @@
  * -------------------------------------------------------------------------------
  * And if you want to contribute for this project, please contact me as well
  * GitHub        : https://github.com/AAChartModel
- * StackOverflow : https://stackoverflow.com/users/7842508/codeforu
+ * StackOverflow : https://stackoverflow.com/users/12302132/codeforu
  * JianShu       : https://www.jianshu.com/u/f1e6753d4254
  * SegmentFault  : https://segmentfault.com/u/huanghunbieguan
  *
@@ -67,6 +67,8 @@
         case 6: return AAChartTypeLine;
         case 7: return AAChartTypeArea;
         case 8: return AAChartTypeScatter;
+        default:
+            break;
     }
     return nil;
 }
@@ -106,7 +108,7 @@
     .seriesSet([self configureSeries])
     ;
     
-    AAOptions *aaOptions = [AAOptionsConstructor configureChartOptionsWithAAChartModel:aaChartModel];
+    AAOptions *aaOptions = aaChartModel.aa_toAAOptions;
       if (aaChartModel.chartType == AAChartTypeColumn) {
           aaOptions.plotOptions.column.groupPadding = @0;
       } else if (aaChartModel.chartType == AAChartTypeBar) {
@@ -148,8 +150,8 @@
 - (NSArray *)configureSeries {
     NSMutableArray *sinNumArr = [[NSMutableArray alloc]init];
     NSMutableArray *sinNumArr2 = [[NSMutableArray alloc]init];
-    CGFloat y1 = 0.f;
-    CGFloat y2 = 0.f;
+    CGFloat y1;
+    CGFloat y2;
     int Q = arc4random()%30;
     for (float x = globalIntenger; x <= globalIntenger + 50 ; x++) {
           //第一个波纹的公式

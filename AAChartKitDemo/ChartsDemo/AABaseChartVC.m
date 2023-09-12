@@ -3,7 +3,7 @@
 //  AAChartKitDemo
 //
 //  Created by AnAn on 2020/7/5.
-//  Copyright © 2020 Danny boy. All rights reserved.
+//  Copyright © 2020 An An. All rights reserved.
 //*************** ...... SOURCE CODE ...... ***************
 //***...................................................***
 //*** https://github.com/AAChartModel/AAChartKit        ***
@@ -22,7 +22,7 @@
  * -------------------------------------------------------------------------------
  * And if you want to contribute for this project, please contact me as well
  * GitHub        : https://github.com/AAChartModel
- * StackOverflow : https://stackoverflow.com/users/7842508/codeforu
+ * StackOverflow : https://stackoverflow.com/users/12302132/codeforu
  * JianShu       : https://www.jianshu.com/u/f1e6753d4254
  * SegmentFault  : https://segmentfault.com/u/huanghunbieguan
  *
@@ -31,7 +31,6 @@
  */
 
 #import "AABaseChartVC.h"
-#import "AAEasyTool.h"
 
 @interface AABaseChartVC ()
 
@@ -55,14 +54,19 @@
 
 - (void)setupTitle {
     NSString *chartType = self.navigationItemTitleArr[self.selectedIndex];
-    self.title = [NSString stringWithFormat:@"%@ chart",chartType];
+    self.title = [NSString stringWithFormat:@"%@",chartType];
 }
 
 - (void)setupNextTypeChartButton {
-    UIBarButtonItem *barItem = [[UIBarButtonItem alloc] initWithTitle:@"Next Chart"
+    UIBarButtonItem *barItem = [[UIBarButtonItem alloc] initWithTitle:@"➷"
                                                                 style:UIBarButtonItemStylePlain
                                                                target:self
                                                                action:@selector(monitorTap)];
+    [barItem setTitleTextAttributes:@{
+        NSForegroundColorAttributeName: UIColor.redColor,
+        NSFontAttributeName: [UIFont systemFontOfSize:28 weight:UIFontWeightBold]
+    } forState:UIControlStateNormal];
+
     self.navigationItem.rightBarButtonItem = barItem;
 }
 
@@ -110,16 +114,16 @@
     CGFloat topConstraintConstant;
     // 如果statusBarFrame为CGRectZero,说明状态栏是隐藏的
     CGRect statusBarFrame = [UIApplication sharedApplication].statusBarFrame;
-    BOOL istatusHiden = (statusBarFrame.size.height == 0);
+    BOOL isStatusHidden = (statusBarFrame.size.height == 0);
     
     if ([self isHairPhone]) {
         topConstraintConstant = 88;
-        if (istatusHiden == true) {
+        if (isStatusHidden == true) {
             topConstraintConstant -= 44;
         }
     } else {
         topConstraintConstant = 64;
-        if (istatusHiden == true) {
+        if (isStatusHidden == true) {
             topConstraintConstant -= 20;
         }
     }
@@ -172,17 +176,35 @@
 //        [weakSelf.aaChartView aa_evaluateJavaScriptStringFunction:jsStr];
 //    }];
 //
+    //获取图表上的手指点击事件
+    [_aaChartView clickEventHandler:^(AAChartView *aaChartView,
+                                      AAClickEventMessageModel *message) {
+        NSDictionary *messageDic = [weakSelf eventMessageModelWithMessageBody:message];
+        [weakSelf printPrettyPrintedClickEventMessageJsonStringWithJsonObject:messageDic];
+    }];
+    
     //获取图表上的手指点击及滑动事件
     [_aaChartView moveOverEventHandler:^(AAChartView *aaChartView,
                                          AAMoveOverEventMessageModel *message) {
-        NSDictionary *messageDic = [AAJsonConverter dictionaryWithObjectInstance:message];
-        [weakSelf printPrettyPrintedJsonStringWithJsonObject:messageDic];
+        NSDictionary *messageDic = [weakSelf eventMessageModelWithMessageBody:message];
+        [weakSelf printPrettyPrintedMoveOverEventMessageJsonStringWithJsonObject:messageDic];
     }];
     
     //在 didReceiveScriptMessage 代理方法中获得点击 X轴的文字🏷标签的回调
     [_aaChartView didReceiveScriptMessageHandler:^(AAChartView *aaChartView, WKScriptMessage *message) {
         NSLog(@"Clicked X axis label,  name is %@", message.body);
     }];
+}
+
+- (NSMutableDictionary *)eventMessageModelWithMessageBody:(AAEventMessageModel *)eventMessageModel {
+    NSMutableDictionary *messageBody = [NSMutableDictionary dictionary];
+    messageBody[@"name"] = eventMessageModel.name;
+    messageBody[@"x"] = eventMessageModel.x;
+    messageBody[@"y"] = eventMessageModel.y;
+    messageBody[@"category"] = eventMessageModel.category;
+    messageBody[@"offset"] = eventMessageModel.offset;
+    messageBody[@"index"] = @(eventMessageModel.index);
+    return messageBody;
 }
 
 //【案例分享】Highcharts 坐标轴标签点击高亮: https://blog.jianshukeji.com/highcharts/highlight-label-by-click.html
@@ -196,19 +218,23 @@
     });));
 }
 
-- (void)drawChartWithChartConfiguration {
-    id chartConfiguration = [self chartConfigurationWithSelectedIndex:self.selectedIndex];
-    if ([chartConfiguration isKindOfClass:AAChartModel.class]) {
-        [self.aaChartView aa_drawChartWithChartModel:chartConfiguration];
-    } else if ([chartConfiguration isKindOfClass:AAOptions.class]) {
-        AAOptions *aaOptions = chartConfiguration;
-        aaOptions.credits
+- (void)configureChartCredits:(id)chartConfiguration {
+    AAOptions *aaOptions = chartConfiguration;
+    aaOptions.credits
         .enabledSet(true)
         .textSet(@"https://github.com/AAChartModel/AAChartKit")
         .hrefSet(@"https://github.com/AAChartModel/AAChartKit")
         .styleSet(AAStyle.new
                   .colorSet(AAColor.redColor)
                   .fontSizeSet(@"9px"));
+}
+
+- (void)drawChartWithChartConfiguration {
+    id chartConfiguration = [self chartConfigurationWithSelectedIndex:self.selectedIndex];
+    if ([chartConfiguration isKindOfClass:AAChartModel.class]) {
+        [self.aaChartView aa_drawChartWithChartModel:chartConfiguration];
+    } else if ([chartConfiguration isKindOfClass:AAOptions.class]) {
+        [self configureChartCredits:chartConfiguration];
         self.aaChartView.scrollEnabled = true;
         [self.aaChartView aa_drawChartWithOptions:chartConfiguration];
     }
@@ -219,14 +245,7 @@
     if ([chartConfiguration isKindOfClass:AAChartModel.class]) {
         [self.aaChartView aa_refreshChartWithChartModel:chartConfiguration];
     } else if ([chartConfiguration isKindOfClass:AAOptions.class]) {
-        AAOptions *aaOptions = chartConfiguration;
-        aaOptions.credits
-        .enabledSet(true)
-        .textSet(@"https://github.com/AAChartModel/AAChartKit")
-        .hrefSet(@"https://github.com/AAChartModel/AAChartKit")
-        .styleSet(AAStyle.new
-                  .colorSet(AAColor.redColor)
-                  .fontSizeSet(@"9px"));
+        [self configureChartCredits:chartConfiguration];
         self.aaChartView.scrollEnabled = true;
         [self.aaChartView aa_refreshChartWithOptions:chartConfiguration];
     }
@@ -277,7 +296,26 @@
 
 }
 
-- (NSString*)printPrettyPrintedJsonStringWithJsonObject:(id)jsonObject {
+- (NSString*)printPrettyPrintedClickEventMessageJsonStringWithJsonObject:(id)jsonObject {
+    NSError *error = nil;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonObject
+                                                       options:NSJSONWritingPrettyPrinted
+                                                         error:&error];
+    NSString *jsonStr =[[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    NSString *logPrefix = @"🖱🖱🖱🖱  user finger clicked!!!,get the clicked event series element message:";
+    NSString *eventMessage = [NSString stringWithFormat:@"%@ \n %@",
+                              logPrefix,
+                              jsonStr];
+    NSLog(@"%@",eventMessage);
+    
+    if (error) {
+        NSLog(@"❌❌❌ pretty printed JSONString with JSONObject serialization failed：%@", error);
+        return nil;
+    }
+    return jsonStr;
+}
+
+- (NSString*)printPrettyPrintedMoveOverEventMessageJsonStringWithJsonObject:(id)jsonObject {
     NSError *error = nil;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonObject
                                                        options:NSJSONWritingPrettyPrinted

@@ -3,7 +3,7 @@
 //  AAChartKitDemo
 //
 //  Created by AnAn on 2020/6/6.
-//  Copyright © 2020 Danny boy. All rights reserved.
+//  Copyright © 2020 An An. All rights reserved.
 //*************** ...... SOURCE CODE ...... ***************
 //***...................................................***
 //*** https://github.com/AAChartModel/AAChartKit        ***
@@ -22,7 +22,7 @@
  * -------------------------------------------------------------------------------
  * And if you want to contribute for this project, please contact me as well
  * GitHub        : https://github.com/AAChartModel
- * StackOverflow : https://stackoverflow.com/users/7842508/codeforu
+ * StackOverflow : https://stackoverflow.com/users/12302132/codeforu
  * JianShu       : https://www.jianshu.com/u/f1e6753d4254
  * SegmentFault  : https://segmentfault.com/u/huanghunbieguan
  *
@@ -44,8 +44,9 @@
 }
 
 
-- (void)customsegmentedControlCellValueBeChanged:(UISegmentedControl *)segmentedControl {
+- (void)customSegmentedControlCellValueBeChanged:(UISegmentedControl *)segmentedControl {
     id options;
+    NSInteger selectedSegmentIndex = segmentedControl.selectedSegmentIndex;
     switch (segmentedControl.tag) {
         case 0: {
             NSArray *stackingArr = @[
@@ -53,7 +54,7 @@
                 AAChartStackingTypeNormal,
                 AAChartStackingTypePercent
             ];
-            AAChartStackingType stackingType = stackingArr[segmentedControl.selectedSegmentIndex];
+            AAChartStackingType stackingType = stackingArr[selectedSegmentIndex];
             AAPlotOptions *aaPlotOptions = AAPlotOptions.new
             .seriesSet(AASeries.new
                        .stackingSet(stackingType));
@@ -68,7 +69,7 @@
                     @10,
                     @100
                 ];
-                NSNumber *borderRadius = borderRadiusArr[segmentedControl.selectedSegmentIndex];
+                NSNumber *borderRadius = borderRadiusArr[selectedSegmentIndex];
                 AAPlotOptions *aaPlotOptions;
                 if (self.chartType == 0) {
                     aaPlotOptions = AAPlotOptions.new
@@ -89,7 +90,7 @@
                     AAChartSymbolTypeTriangle,
                     AAChartSymbolTypeTriangle_down
                 ];
-                AAChartSymbolType markerSymbol = symbolArr[segmentedControl.selectedSegmentIndex];
+                AAChartSymbolType markerSymbol = symbolArr[selectedSegmentIndex];
                 AAPlotOptions *aaPlotOptions = AAPlotOptions.new
                 .seriesSet(AASeries.new
                            .markerSet(AAMarker.new
@@ -108,19 +109,20 @@
 
 - (void)switchViewClicked:(UISwitch *)switchView {
     id options;
+    BOOL isOn = switchView.isOn;
     switch (switchView.tag) {
         case 0: {
-//            AAXAxis *aaXAxis = AAXAxis.new
-//            .reversedSet(switchView.on);
-            
-            AAChart *chart = AAChart.new;
-            chart.backgroundColor = (id)AAGradientColor.springGreensColor;
-            options = chart;
+            AAXAxis *aaXAxis = AAXAxis.new
+            .reversedSet(isOn);
+            options = aaXAxis;
+//            AAChart *chart = AAChart.new;
+//            chart.backgroundColor = (id)AAGradientColor.springGreensColor;
+//            options = chart;
         }
             break;
         case 1: {
             AAYAxis *aaYAxis = AAYAxis.new
-            .reversedSet(switchView.on);
+            .reversedSet(isOn);
             options = aaYAxis;
         }
             break;
@@ -128,17 +130,17 @@
             if (self.aaChartModel.chartType == AAChartTypeBar) {
                 NSLog(@"⚠️⚠️⚠️inverted is useless for Bar Chart");
             }
-            self.aaChartModel.inverted = switchView.on;
+            self.aaChartModel.inverted = isOn;
             AAChart *aaChart = AAChart.new
-            .invertedSet(switchView.on)
+            .invertedSet(isOn)
             .polarSet(self.aaChartModel.polar);
             options = aaChart;
         }
             break;
         case 3: {
-            self.aaChartModel.polar = switchView.on;
+            self.aaChartModel.polar = isOn;
             AAChart *aaChart = AAChart.new
-            .polarSet(switchView.on)
+            .polarSet(isOn)
             .invertedSet(self.aaChartModel.inverted);
             options = aaChart;
             
@@ -183,12 +185,12 @@
             AAPlotOptions *aaPlotOptions = AAPlotOptions.new
             .seriesSet(AASeries.new
                        .dataLabelsSet(AADataLabels.new
-                                      .enabledSet(switchView.on)));
+                                      .enabledSet(isOn)));
             options = aaPlotOptions;
         }
             break;
         case 5: {
-            AAMarker *aaMarker = switchView.on ?
+            AAMarker *aaMarker = isOn ?
             AAMarker.new
             .enabledSet(false)
             :

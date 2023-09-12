@@ -3,12 +3,13 @@
 //  AAChartKitDemo
 //
 //  Created by AnAn on 2020/2/4.
-//  Copyright © 2020 Danny boy. All rights reserved.
+//  Copyright © 2020 An An. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
+#import "AABaseChartVC.h"
 
-@interface DrawableChartVC : UIViewController
+@interface DrawableChartVC : AABaseChartVC
 
 typedef NS_ENUM(NSInteger, DrawableChartVCChartType) {
     DrawableChartVCChartTypeColumn = 0,

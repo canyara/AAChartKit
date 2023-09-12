@@ -22,7 +22,7 @@
  * -------------------------------------------------------------------------------
  * And if you want to contribute for this project, please contact me as well
  * GitHub        : https://github.com/AAChartModel
- * StackOverflow : https://stackoverflow.com/users/7842508/codeforu
+ * StackOverflow : https://stackoverflow.com/users/12302132/codeforu
  * JianShu       : https://www.jianshu.com/u/f1e6753d4254
  * SegmentFault  : https://segmentfault.com/u/huanghunbieguan
  *
@@ -31,7 +31,8 @@
  */
 
 #import "ShowManyChartViewVC.h"
-#import "AAChartView.h"
+#import "AAChartKit.h"
+
 @interface ShowManyChartViewVC ()
 
 @end
@@ -103,10 +104,10 @@
     .categoriesSet(@[@"Java",@"Swift",@"Python",@"Ruby", @"PHP",@"Go",@"C",@"C#",@"C++",@"Perl",@"R",@"MATLAB",@"SQL"])
     .markerSymbolStyleSet(AAChartSymbolStyleTypeBorderBlank)
     .markerRadiusSet(@6)
-    .xAxisCrosshairSet([AACrosshair crosshairWithColor:@"#ff0000"
+    .xAxisCrosshairSet([AACrosshair crosshairWithColor:AAColor.redColor
                                              dashStyle:AAChartLineDashStyleTypeDashDot
                                                  width:@1.5f])
-    .yAxisCrosshairSet([AACrosshair crosshairWithColor:@"#ff0000"
+    .yAxisCrosshairSet([AACrosshair crosshairWithColor:AAColor.redColor
                                              dashStyle:AAChartLineDashStyleTypeLongDashDot
                                                  width:@1.5f])
     .seriesSet(@[

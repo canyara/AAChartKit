@@ -3,7 +3,7 @@
 //  AAChartKitDemo
 //
 //  Created by AnAn on 2019/9/22.
-//  Copyright © 2019 Danny boy. All rights reserved.
+//  Copyright © 2019 An An. All rights reserved.
 //*************** ...... SOURCE CODE ...... ***************
 //***...................................................***
 //*** https://github.com/AAChartModel/AAChartKit        ***
@@ -22,7 +22,7 @@
  * -------------------------------------------------------------------------------
  * And if you want to contribute for this project, please contact me as well
  * GitHub        : https://github.com/AAChartModel
- * StackOverflow : https://stackoverflow.com/users/7842508/codeforu
+ * StackOverflow : https://stackoverflow.com/users/12302132/codeforu
  * JianShu       : https://www.jianshu.com/u/f1e6753d4254
  * SegmentFault  : https://segmentfault.com/u/huanghunbieguan
  *
@@ -60,7 +60,7 @@
         
     } else if (_sampleChartTypeIndex == 2 || _sampleChartTypeIndex == 3) {
         AAChartModel *aaChartModel = [self configureStackingColumnMixedLineChart];
-        AAOptions *aaOptions = [AAOptionsConstructor configureChartOptionsWithAAChartModel:aaChartModel];
+        AAOptions *aaOptions = aaChartModel.aa_toAAOptions;
         if (_sampleChartTypeIndex == 2) {
             aaOptions.colors = @[
                 AAGradientColor.springGreensColor,
@@ -178,7 +178,7 @@
         .markerSet(AAMarker.new
                    .radiusSet(@7)//曲线连接点半径，默认是4
                    .symbolSet(AAChartSymbolTypeCircle)//曲线点类型："circle", "square", "diamond", "triangle","triangle-down"，默认是"circle"
-                   .fillColorSet(@"#ffffff")//点的填充色(用来设置折线连接点的填充色)
+                   .fillColorSet(AAColor.whiteColor)//点的填充色(用来设置折线连接点的填充色)
                    .lineWidthSet(@3)//外沿线的宽度(用来设置折线连接点的轮廓描边的宽度)
                    .lineColorSet(@"")//外沿线的颜色(用来设置折线连接点的轮廓描边颜色，当值为空字符串时，默认取数据点或数据列的颜色)
                    )
@@ -223,7 +223,7 @@
     
     /**
      * 设置雷达图周边文案有两种方式
-     * 1、设置 categoriesSet，但会导致雷达图翻转，需在设置 series 时配置  pointPlacement 为 "on"（https://github.com/AAChartModel/AAChartKit/issues/301）
+     * 1、设置 categoriesSet，但会导致雷达图翻转，需在设置 series 时配置  pointPlacement 为 "on"（ https://github.com/AAChartModel/AAChartKit/issues/301 ）
      * 2、用 aaOptions.xAxis.labels.formatter 进行格式化输出
      */
     NSArray *categories = @[@"孤岛危机",@"美国末日",@"使命召唤",@"荣誉勋章",@"死亡搁浅"];
@@ -252,7 +252,7 @@
         .dataSet(@[@17.0, @16.9, @12.5,]),
                ]);
     
-    AAOptions *aaOptions = [AAOptionsConstructor configureChartOptionsWithAAChartModel:aaChartModel];
+    AAOptions *aaOptions = aaChartModel.aa_toAAOptions;
     aaOptions.chart.marginLeft = @40;
     aaOptions.chart.marginRight = @40;
     
@@ -260,7 +260,7 @@
         return %@[this.value];
     })), [categories aa_toJSArray]];
     
-    aaOptions.yAxis.gridLineInterpolation = AAYAxisGridLineInterpolationPolygon;
+    aaOptions.yAxis.gridLineInterpolation = AAChartYAxisGridLineInterpolationTypePolygon;
     
     aaOptions.xAxis.lineWidth = @0;//避免多边形外环之外有额外套了一层无用的外环
     aaOptions.yAxis.plotBands = @[

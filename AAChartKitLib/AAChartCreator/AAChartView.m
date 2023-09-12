@@ -22,7 +22,7 @@
  * ------------------------------------------------------------------------------
  * And if you want to contribute for this project, please contact me as well
  * GitHub        : https://github.com/AAChartModel
- * StackOverflow : https://stackoverflow.com/users/7842508/codeforu
+ * StackOverflow : https://stackoverflow.com/users/12302132/codeforu
  * JianShu       : https://www.jianshu.com/u/f1e6753d4254
  * SegmentFault  : https://segmentfault.com/u/huanghunbieguan
  *
@@ -71,8 +71,13 @@
 
 @end
 
-@implementation AAMoveOverEventMessageModel
+@implementation AAEventMessageModel
+@end
 
+@implementation AAClickEventMessageModel
+@end
+
+@implementation AAMoveOverEventMessageModel
 @end
 
 /**
@@ -85,6 +90,7 @@
 #define AADetailLog(...)
 #endif
 
+static NSString * const kUserContentMessageNameClick = @"click";
 static NSString * const kUserContentMessageNameMouseOver = @"mouseover";
 static NSString * const kUserContentMessageNameCustomEvent = @"customevent";
 
@@ -94,6 +100,7 @@ WKNavigationDelegate,
 WKScriptMessageHandler
 > {
     NSString  *_optionJson;
+    BOOL _clickEventEnabled;
     BOOL _mouseOverEventEnabled;
     BOOL _customEventEnabled;
 }
@@ -104,29 +111,43 @@ WKScriptMessageHandler
 
 @implementation AAChartView
 
+#pragma mark - Initialization
 - (instancetype)initWithFrame:(CGRect)frame {
-    WKWebViewConfiguration *config = [[WKWebViewConfiguration alloc] init];
-    config.userContentController = [[WKUserContentController alloc] init];
-    self = [super initWithFrame:frame configuration:config];
-    
+    self = [self initConfigurationWithFrame:frame];
     if (self) {
-        self.UIDelegate = self;
-        self.navigationDelegate = self;
-        self.backgroundColor = [UIColor whiteColor];
+        [self setupDelegate];
     }
     return self;
 }
 
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [self initConfigurationWithFrame:CGRectNull];
+    if (self) {
+        self.translatesAutoresizingMaskIntoConstraints = NO;
+        [self setupDelegate];
+    }
+    return self;
+}
 
-#pragma CONFIGURE THE CHART VIEW CONTENT WITH AACHARTMODEL
+- (instancetype)initConfigurationWithFrame:(CGRect)frame {
+    WKWebViewConfiguration *config = [[WKWebViewConfiguration alloc] init];
+    return [super initWithFrame:frame configuration:config];
+}
 
+- (void)setupDelegate {
+    self.UIDelegate = self;
+    self.navigationDelegate = self;
+}
+
+
+#pragma mark - Configure Chart View Content With AAChartModel
 - (void)aa_drawChartWithChartModel:(AAChartModel *)chartModel {
-    AAOptions *options = [AAOptionsConstructor configureChartOptionsWithAAChartModel:chartModel];
+    AAOptions *options = chartModel.aa_toAAOptions;
     [self aa_drawChartWithOptions:options];
 }
 
 - (void)aa_refreshChartWithChartModel:(AAChartModel *)chartModel {
-    AAOptions *options = [AAOptionsConstructor configureChartOptionsWithAAChartModel:chartModel];
+    AAOptions *options = chartModel.aa_toAAOptions;
     [self aa_refreshChartWithOptions:options];
 }
 
@@ -140,8 +161,7 @@ WKScriptMessageHandler
 }
 
 
-#pragma CONFIGURE THE CHART VIEW CONTENT WITH AAOPTIONS
-
+#pragma mark - Configure Chart View Content With AAOptions
 - (void)aa_drawChartWithOptions:(AAOptions *)options {
     if (!_optionJson) {
         [self configureTheOptionsJsonStringWithAAOptions:options];
@@ -336,9 +356,11 @@ WKScriptMessageHandler
     [self safeEvaluateJavaScriptString:jsStr];
 }
 
+#if TARGET_OS_IPHONE
 - (void)aa_adaptiveScreenRotation {
     [self aa_adaptiveScreenRotationWithAnimation:nil];
 }
+
 
 - (void)aa_adaptiveScreenRotationWithAnimation:(AAAnimation *)animation {
     __weak __typeof__(self) weakSelf = self;
@@ -346,7 +368,10 @@ WKScriptMessageHandler
                                                       object:nil
                                                        queue:nil
                                                   usingBlock:^(NSNotification * _Nonnull note) {
-        [weakSelf handleDeviceOrientationChangeEventWithAnimation:animation];
+        //Delay execution by 0.01 seconds to prevent incorrect screen width and height obtained when the screen is rotated
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [weakSelf handleDeviceOrientationChangeEventWithAnimation:animation];
+        });
     }];
 }
 
@@ -355,6 +380,7 @@ WKScriptMessageHandler
                                height:self.frame.size.height
                             animation:animation];
 }
+#endif
 
 - (void)aa_changeChartSizeWithWidth:(CGFloat)width
                              height:(CGFloat)height
@@ -375,21 +401,41 @@ WKScriptMessageHandler
     if (!bundle) { //installed manually
         bundle = [NSBundle mainBundle];
     }
-    NSString *webPath = [bundle pathForResource:@"AAChartView"
-                                         ofType:@"html"
-                                    inDirectory:@"AAJSFiles.bundle"];
-    NSURL *webURL = [NSURL fileURLWithPath:webPath];
-    NSURLRequest *URLRequest = [[NSURLRequest alloc] initWithURL:webURL];
+    NSString *aaChartViewHtmlPath = [bundle pathForResource:@"AAChartView"
+                                                     ofType:@"html"
+                                                inDirectory:@"AAJSFiles.bundle"];
+    NSAssert(aaChartViewHtmlPath.length > 0, @"Failed to get the loading path of `AAChartView.html` file, please check whether the importing method is correct or the file name is correct");
+    NSURL *aaChartViewHtmlURL = [NSURL fileURLWithPath:aaChartViewHtmlPath];
+    NSURLRequest *URLRequest = [[NSURLRequest alloc] initWithURL:aaChartViewHtmlURL];
     return URLRequest;
 }
 
+- (void)configurePlotOptionsSeriesPointEventsWithAAOptions:(AAOptions *)aaOptions {
+    if (aaOptions.plotOptions == nil) {
+        aaOptions.plotOptions = AAPlotOptions.new.seriesSet(AASeries.new.pointSet(AAPoint.new.eventsSet(AAPointEvents.new)));
+    } else if (aaOptions.plotOptions.series == nil) {
+        aaOptions.plotOptions.series = AASeries.new.pointSet(AAPoint.new.eventsSet(AAPointEvents.new));
+    } else if (aaOptions.plotOptions.series.point == nil) {
+        aaOptions.plotOptions.series.point = AAPoint.new.eventsSet(AAPointEvents.new);
+    } else if (aaOptions.plotOptions.series.point.events == nil) {
+        aaOptions.plotOptions.series.point.events = AAPointEvents.new;
+    }
+}
 
 - (void)configureTheOptionsJsonStringWithAAOptions:(AAOptions *)aaOptions {
-    if (self.isClearBackgroundColor) {
+    if (_isClearBackgroundColor) {
         aaOptions.chart.backgroundColor = @"rgba(0,0,0,0)";
+    }
+    
+    if (_clickEventEnabled == true) {
+        aaOptions.clickEventEnabled = true;
+        [self configurePlotOptionsSeriesPointEventsWithAAOptions:aaOptions];
     }
     if (_mouseOverEventEnabled == true) {
         aaOptions.touchEventEnabled = true;
+        if (_clickEventEnabled == false) {//避免重复调用配置方法
+            [self configurePlotOptionsSeriesPointEventsWithAAOptions:aaOptions];
+        }
     }
     
     _optionJson = [AAJsonConverter pureOptionsJsonStringWithOptionsInstance:aaOptions];
@@ -397,24 +443,41 @@ WKScriptMessageHandler
 
 #pragma mark - WKUIDelegate
 - (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler {
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"JS WARNING"
-                                                                             message:message
-                                                                      preferredStyle:UIAlertControllerStyleAlert];
-    [alertController addAction:([UIAlertAction actionWithTitle:@"Okay"
-                                                         style:UIAlertActionStyleDefault
-                                                       handler:^(UIAlertAction * _Nonnull action) {
+#if TARGET_OS_IPHONE
+    UIAlertController *alertController =
+    [UIAlertController alertControllerWithTitle:@"JS WARNING"
+                                        message:message
+                                 preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction *alertAction =
+    [UIAlertAction actionWithTitle:@"Okay"
+                             style:UIAlertActionStyleDefault
+                           handler:^(UIAlertAction * _Nonnull action) {
         completionHandler();
-    }])];
+    }];
+    [alertController addAction:alertAction];
     
     UIViewController *alertHelperController = [[UIViewController alloc]init];
     [self addSubview:alertHelperController.view];
     
     [alertHelperController presentViewController:alertController animated:YES completion:nil];
+#elif TARGET_OS_MAC
+    NSAlert *alert = [[NSAlert alloc] init];
+    alert.alertStyle = NSAlertStyleWarning;
+    alert.messageText = @"JS WARNING";
+    alert.informativeText = message;
+    [alert addButtonWithTitle:@"Okay"];
+    [alert beginSheetModalForWindow:[self window] completionHandler:nil];
+#endif
 }
 
 #pragma mark - AAChartView Event Handler
 - (void)didFinishLoadHandler:(AADidFinishLoadBlock)handler {
     self.didFinishLoadBlock = handler;
+}
+
+- (void)clickEventHandler:(AAClickEventBlock)handler {
+    self.clickEventBlock = handler;
 }
 
 - (void)moveOverEventHandler:(AAMoveOverEventBlock)handler {
@@ -450,8 +513,16 @@ WKScriptMessageHandler
 #pragma mark - WKScriptMessageHandler
 - (void)userContentController:(WKUserContentController *)userContentController
       didReceiveScriptMessage:(WKScriptMessage *)message {
-    if ([message.name isEqualToString:kUserContentMessageNameMouseOver]) {
-        AAMoveOverEventMessageModel *eventMessageModel = [self eventMessageModelWithMessageBody:message.body];
+    if ([message.name isEqualToString:kUserContentMessageNameClick]) {
+        AAClickEventMessageModel *eventMessageModel = (id)[self eventMessageModelWithMessageBody:message.body];
+       if (self.clickEventBlock) {
+           self.clickEventBlock(self, eventMessageModel);
+           return;
+       }
+       
+       [self.delegate aaChartView:self clickEventWithMessage:eventMessageModel];
+   } else if ([message.name isEqualToString:kUserContentMessageNameMouseOver]) {
+        AAMoveOverEventMessageModel *eventMessageModel = (id)[self eventMessageModelWithMessageBody:message.body];
         if (self.moveOverEventBlock) {
             self.moveOverEventBlock(self, eventMessageModel);
             return;
@@ -468,7 +539,7 @@ WKScriptMessageHandler
     }
 }
 
-- (AAMoveOverEventMessageModel *)eventMessageModelWithMessageBody:(id)messageBody {
+- (AAEventMessageModel *)eventMessageModelWithMessageBody:(id)messageBody {
     AAMoveOverEventMessageModel *eventMessageModel = AAMoveOverEventMessageModel.new;
     eventMessageModel.name = messageBody[@"name"];
     eventMessageModel.x = messageBody[@"x"];
@@ -509,8 +580,8 @@ WKScriptMessageHandler
     }];
 }
 
-#pragma mark -- setter method
-
+#pragma mark -- Setter Method
+#if TARGET_OS_IPHONE
 - (void)setContentInsetAdjustmentBehavior:(UIScrollViewContentInsetAdjustmentBehavior)contentInsetAdjustmentBehavior {
     _contentInsetAdjustmentBehavior = contentInsetAdjustmentBehavior;
     self.scrollView.contentInsetAdjustmentBehavior = _contentInsetAdjustmentBehavior;
@@ -519,6 +590,29 @@ WKScriptMessageHandler
 - (void)setScrollEnabled:(BOOL)scrollEnabled {
     _scrollEnabled = scrollEnabled;
     self.scrollView.scrollEnabled = _scrollEnabled;
+}
+#endif
+
+
+- (void)setIsClearBackgroundColor:(BOOL)isClearBackgroundColor {
+    _isClearBackgroundColor = isClearBackgroundColor;
+#if TARGET_OS_IPHONE
+    if (_isClearBackgroundColor) {
+        self.backgroundColor = [UIColor clearColor];
+        self.opaque = NO;
+    } else {
+        self.backgroundColor = [UIColor whiteColor];
+        self.opaque = YES;
+    }
+#elif TARGET_OS_MAC
+    if (_isClearBackgroundColor) {
+        self.layer.backgroundColor = [NSColor clearColor].CGColor;
+        self.layer.opaque = NO;
+    } else {
+        self.layer.backgroundColor = [NSColor whiteColor].CGColor;
+        self.layer.opaque = YES;
+    }
+#endif
 }
 
 - (void)setContentWidth:(CGFloat)contentWidth {
@@ -542,20 +636,15 @@ WKScriptMessageHandler
     [self safeEvaluateJavaScriptString:jsStr];
 }
 
-- (void)setIsClearBackgroundColor:(BOOL)isClearBackgroundColor {
-    _isClearBackgroundColor = isClearBackgroundColor;
-    if (_isClearBackgroundColor) {
-        [self setBackgroundColor:[UIColor clearColor]];
-        [self setOpaque:NO];
-    } else {
-        self.backgroundColor = [UIColor whiteColor];
-        [self setOpaque:YES];
-    }
-}
 
 - (void)setDelegate:(id<AAChartViewEventDelegate>)delegate {
     NSAssert(_optionJson == nil, @"You should set delegate before drawing chart");
     _delegate = delegate;
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(aaChartView:clickEventWithMessage:)]) {
+        _clickEventEnabled = true;
+        [self addClickEventMessageHandler];
+    }
     
     if (self.delegate && ([self.delegate respondsToSelector:@selector(aaChartView:moveOverEventWithMessage:)])) {
         _mouseOverEventEnabled = true;
@@ -568,7 +657,16 @@ WKScriptMessageHandler
     }
 }
 
--(void)setMoveOverEventBlock:(AAMoveOverEventBlock)moveOverEventBlock {
+- (void)setClickEventBlock:(AAClickEventBlock)clickEventBlock {
+    NSAssert(_optionJson == nil, @"You should set clickEventBlock before drawing chart");
+    _clickEventBlock = clickEventBlock;
+    if (self.clickEventBlock) {
+        _clickEventEnabled = true;
+        [self addClickEventMessageHandler];
+    }
+}
+
+- (void)setMoveOverEventBlock:(AAMoveOverEventBlock)moveOverEventBlock {
     NSAssert(_optionJson == nil, @"You should set moveOverEventBlock before drawing chart");
     _moveOverEventBlock = moveOverEventBlock;
     if (self.moveOverEventBlock) {
@@ -586,6 +684,11 @@ WKScriptMessageHandler
     }
 }
 
+- (void)addClickEventMessageHandler {
+    [self.configuration.userContentController addScriptMessageHandler:(id<WKScriptMessageHandler>)self.weakProxy
+                                                                 name:kUserContentMessageNameClick];
+}
+
 - (void)addMouseOverEventMessageHandler {
     [self.configuration.userContentController addScriptMessageHandler:(id<WKScriptMessageHandler>)self.weakProxy
                                                                  name:kUserContentMessageNameMouseOver];
@@ -596,7 +699,7 @@ WKScriptMessageHandler
                                                                  name:kUserContentMessageNameCustomEvent];
 }
 
-#pragma mark -- getter method
+#pragma mark -- Getter Method
 - (AAWeakProxy *)weakProxy {
     if (!_weakProxy) {
         _weakProxy = [AAWeakProxy proxyWithTarget:self];

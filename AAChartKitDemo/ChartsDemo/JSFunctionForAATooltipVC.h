@@ -3,13 +3,13 @@
 //  AAChartKitDemo
 //
 //  Created by AnAn on 2019/4/23.
-//  Copyright © 2019 Danny boy. All rights reserved.
+//  Copyright © 2019 An An. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 #import "AABaseChartVC.h"
 
-@interface JSFormatterFunctionVC : AABaseChartVC
+@interface JSFunctionForAATooltipVC : AABaseChartVC
 
 @end
 

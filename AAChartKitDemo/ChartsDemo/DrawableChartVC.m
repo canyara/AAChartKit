@@ -22,7 +22,7 @@
  * -------------------------------------------------------------------------------
  * And if you want to contribute for this project, please contact me as well
  * GitHub        : https://github.com/AAChartModel
- * StackOverflow : https://stackoverflow.com/users/7842508/codeforu
+ * StackOverflow : https://stackoverflow.com/users/12302132/codeforu
  * JianShu       : https://www.jianshu.com/u/f1e6753d4254
  * SegmentFault  : https://segmentfault.com/u/huanghunbieguan
  *
@@ -37,9 +37,6 @@
     int myBasicValue;
 }
 
-@property (nonatomic, strong) AAChartModel *chartModel;
-@property (nonatomic, strong) AAChartView  *chartView;
-
 @end
 
 @implementation DrawableChartVC
@@ -48,37 +45,35 @@
     [super viewDidLoad];
     myBasicValue = 0;
     
-    AAChartView *aaChartView = [self setupChartView];
-    AAOptions *aaOptions = [self setupChartOtions];
-    
-    [aaChartView aa_drawChartWithOptions:aaOptions];
 }
 
 - (AAChartType)configureChartType {
-    switch (_chartType) {
-        case DrawableChartVCChartTypeColumn: return AAChartTypeColumn;
-        case DrawableChartVCChartTypeBar: return AAChartTypeBar;
-        case DrawableChartVCChartTypeArea: return AAChartTypeArea;
-        case DrawableChartVCChartTypeAreaspline: return AAChartTypeAreaspline;
-        case DrawableChartVCChartTypeLine: return AAChartTypeLine;
-        case DrawableChartVCChartTypeSpline: return AAChartTypeSpline;
-        case DrawableChartVCChartTypeStepLine: return AAChartTypeLine;
-        case DrawableChartVCChartTypeStepArea: return AAChartTypeArea;
-        case DrawableChartVCChartTypeScatter: return AAChartTypeScatter;
+    switch (self.selectedIndex) {
+        case 0: return AAChartTypeColumn;
+        case 1: return AAChartTypeBar;
+        case 2: return AAChartTypeArea;
+        case 3: return AAChartTypeAreaspline;
+        case 4: return AAChartTypeLine;
+        case 5: return AAChartTypeSpline;
+        case 6: return AAChartTypeLine;
+        case 7: return AAChartTypeArea;
+        case 8: return AAChartTypeScatter;
+        case 9: return AAChartTypePie;
     }
+    return AAChartTypeColumn;
 }
 
-- (AAChartView *)setupChartView {
-    CGRect chartViewFrame = CGRectMake(0,
-                                       88,
-                                       self.view.frame.size.width,
-                                       self.view.frame.size.height - 88);
-    AAChartView *aaChartView = [[AAChartView alloc]initWithFrame:chartViewFrame];
-    self.view.backgroundColor = [UIColor whiteColor];
-    [self configureChartViewTypeWithChartView:aaChartView];
-    [self.view addSubview:aaChartView];
+- (id)chartConfigurationWithSelectedIndex:(NSUInteger)selectedIndex {
+    self.selectedIndex = selectedIndex;
     
-    return aaChartView;
+    if (selectedIndex == 6) {
+        self.chartType = DrawableChartVCChartTypeStepLine;
+    } else if (selectedIndex == 7) {
+        self.chartType = DrawableChartVCChartTypeStepArea;
+    }
+    
+    AAChartType chartType = [self configureChartType];
+    return [self setupChartOtionsWithChartType:chartType];
 }
 
 
@@ -99,7 +94,7 @@
     }
 }
 
-- (AAOptions *) setupChartOtions {
+- (AAOptions *)setupChartOtionsWithChartType:(AAChartType)chartType {
     NSDictionary *gradientColorDic1 =
     [AAGradientColor gradientColorWithDirection:AALinearGradientDirectionToBottom
                                startColorString:@"rgba(138,43,226,1)"
@@ -111,7 +106,7 @@
                                  endColorString:@"#00FA9A"];
     
     AAChartModel *aaChartModel =  AAChartModel.new
-    .chartTypeSet([self configureChartType])//图表类型随机
+    .chartTypeSet(chartType)//图表类型随机
     .xAxisVisibleSet(true)
     .yAxisTitleSet(@"摄氏度")
     .stackingSet(AAChartStackingTypeNormal)
@@ -144,7 +139,7 @@
         aaChartModel.yAxisVisible = false;
     }
     
-    AAOptions *aaOptions = [AAOptionsConstructor configureChartOptionsWithAAChartModel:aaChartModel];
+    AAOptions *aaOptions = aaChartModel.aa_toAAOptions;
     aaOptions.tooltip.followTouchMove = false;
     aaOptions.xAxis.minRange = @2;
     return aaOptions;

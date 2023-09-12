@@ -22,7 +22,7 @@
  * -------------------------------------------------------------------------------
  * And if you want to contribute for this project, please contact me as well
  * GitHub        : https://github.com/AAChartModel
- * StackOverflow : https://stackoverflow.com/users/7842508/codeforu
+ * StackOverflow : https://stackoverflow.com/users/12302132/codeforu
  * JianShu       : https://www.jianshu.com/u/f1e6753d4254
  * SegmentFault  : https://segmentfault.com/u/huanghunbieguan
  *
@@ -141,7 +141,7 @@
     
     _gradientColorsArr = aaChartModel.colorsTheme;
     
-    AAOptions *aaOptions = [AAOptionsConstructor configureChartOptionsWithAAChartModel:aaChartModel];
+    AAOptions *aaOptions = aaChartModel.aa_toAAOptions;
     aaOptions.plotOptions.column.groupPadding = @0;
     aaOptions.yAxis.gridLineWidth = @0;
     aaOptions.xAxis
@@ -200,7 +200,7 @@
     .chartTypeSet(AAChartTypeColumn)
     .markerSymbolStyleSet(AAChartSymbolStyleTypeBorderBlank)
     .markerRadiusSet(@6)
-    .xAxisCrosshairSet([AACrosshair crosshairWithColor:@"#ff0000" dashStyle:AAChartLineDashStyleTypeDashDot])
+    .xAxisCrosshairSet([AACrosshair crosshairWithColor:AAColor.redColor dashStyle:AAChartLineDashStyleTypeDashDot])
     .legendEnabledSet(false)
 //    .borderRadiusSet((id)@"50%")//Do not work and I dont know why
     .seriesSet(@[
@@ -213,7 +213,7 @@
         .dataSet(@[@31,@22,@33,@54,@35,@36,@27,@38,@39,@54,@41,@29]),
                ]);
     
-    AAOptions *aaOptions2 = [AAOptionsConstructor configureChartOptionsWithAAChartModel:aaChartModel2];
+    AAOptions *aaOptions2 = aaChartModel2.aa_toAAOptions;
     aaOptions2.plotOptions.column.groupPadding = @0;
     aaOptions2.yAxis.gridLineWidth = @0;
     

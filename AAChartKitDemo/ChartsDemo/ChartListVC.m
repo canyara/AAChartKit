@@ -22,7 +22,7 @@
  * -------------------------------------------------------------------------------
  * And if you want to contribute for this project, please contact me as well
  * GitHub        : https://github.com/AAChartModel
- * StackOverflow : https://stackoverflow.com/users/7842508/codeforu
+ * StackOverflow : https://stackoverflow.com/users/12302132/codeforu
  * JianShu       : https://www.jianshu.com/u/f1e6753d4254
  * SegmentFault  : https://segmentfault.com/u/huanghunbieguan
  *
@@ -31,7 +31,7 @@
  */
 
 #import "ChartListVC.h"
-#import "AAChartModel.h"
+#import "AAChartKit.h"
 
 #define ColorWithRGB(r,g,b,a) [UIColor colorWithRed:(r)/255.0f green:(g)/255.0f blue:(b)/255.0f alpha:(a)]
 #define AAGrayColor            [UIColor colorWithRed:245/255.0 green:246/255.0 blue:247/255.0 alpha:1.0]
@@ -245,41 +245,39 @@
       ];
     
     NSDictionary *gradientColor = gradientColorArr[index];
-    chartModel.colorsThemeSet(@[@"rgba(255,255,255,0.4)",
-                                @"rgba(255,255,255,0.6)",
-                                @"rgba(255,255,255,0.8)",
-                                @"rgba(255,255,255,1.0)",
-                                ]);//设置主体颜色数组
+    
+    chartModel.colorsTheme = @[
+        @"rgba(255,255,255,0.4)",
+        @"rgba(255,255,255,0.6)",
+        @"rgba(255,255,255,0.8)",
+        @"rgba(255,255,255,1.0)",
+    ];//设置主体颜色数组
 
     chartModel.backgroundColor = (id)gradientColor;
+
+    AAOptions *aaOptions = chartModel.aa_toAAOptions;
     
-    AAOptions *aaOptions = [AAOptionsConstructor configureChartOptionsWithAAChartModel:chartModel];
-    
-    aaOptions.plotOptions
-    .columnrangeSet(AALine.new
-                    .dataLabelsSet(AADataLabels.new
-                                   .enabledSet(true)
-                                   .styleSet(AAStyle.new
-                                             .colorSet(AAColor.whiteColor)
-                                             .fontSizeSet(@"14px")
-                                             .fontWeightSet(AAChartFontWeightTypeThin)
-                                             .textOutlineSet(@"0px 0px contrast")//文字轮廓描边
-                                             )));
     aaOptions.plotOptions.series.animation = (id)@false;//禁用图表的渲染动画效果
     
     aaOptions.yAxis
     .lineWidthSet(@1.5)//Y轴轴线颜色
     .lineColorSet(AAColor.whiteColor)//Y轴轴线颜色
     .gridLineWidthSet(@0)//Y轴网格线宽度
-    .labels.style.colorSet(AAColor.whiteColor)//Y轴文字颜色
     ;
+    
+    aaOptions.yAxis.labels
+    .styleSet(AAStyle.new
+              .colorSet(AAColor.whiteColor));//Y轴文字颜色
     
     aaOptions.xAxis
     .tickWidthSet(@0)//X轴刻度线宽度
     .lineWidthSet(@1.5)//X轴轴线宽度
     .lineColorSet(AAColor.whiteColor)//X轴轴线颜色
-    .labels.style.colorSet(AAColor.whiteColor)//X轴文字颜色
     ;
+    
+    aaOptions.xAxis.labels
+    .styleSet(AAStyle.new
+              .colorSet(AAColor.whiteColor));//X轴文字颜色
 
     aaOptions.legend
     .itemStyleSet(AAItemStyle.new
