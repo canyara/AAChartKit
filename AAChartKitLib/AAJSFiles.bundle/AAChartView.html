@@ -132,7 +132,7 @@
             var duration = parseInt(animation)
             
             if (duration > 1) {
-              animationBool = { duration : duration }
+              animationBool = { duration : duration, easing: function(pos){return pos} }
             }
             aaGlobalChart.redraw(animationBool);
         }
