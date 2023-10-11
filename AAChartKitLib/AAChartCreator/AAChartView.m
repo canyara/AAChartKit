@@ -558,6 +558,9 @@ WKScriptMessageHandler
     }
     
     [self evaluateJavaScript:functionNameStr completionHandler:^(id item, NSError * _Nullable error) {
+      if (self.didFinishDraw) {
+          self.didFinishDraw(self);
+      }
 #if DEBUG
         if (!error) return;
         NSMutableDictionary *errorDic = [NSMutableDictionary dictionary];

@@ -117,6 +117,8 @@ typedef void(^AADidReceiveScriptMessageBlock)(AAChartView *aaChartView, WKScript
 /// The block method of chart view finish loading
 @property (nonatomic, copy) AADidFinishLoadBlock didFinishLoadBlock;
 
+@property (nonatomic, copy) AADidFinishLoadBlock didFinishDraw;
+
 /// The block method of user finger click event
 @property (nonatomic, copy) AAClickEventBlock clickEventBlock;
 
