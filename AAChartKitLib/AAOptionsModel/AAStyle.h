@@ -60,6 +60,8 @@ AAPropStatementAndPropSetFuncStatement(copy,   AAStyle, NSString *, top)
 AAPropStatementAndPropSetFuncStatement(copy,   AAStyle, NSString *, transition)
 AAPropStatementAndPropSetFuncStatement(copy,   AAStyle, NSString *, whiteSpace)
 AAPropStatementAndPropSetFuncStatement(strong, AAStyle, NSNumber *, width)
+AAPropStatementAndPropSetFuncStatement(strong, AAStyle, NSString *, backdropFilter)
+AAPropStatementAndPropSetFuncStatement(strong, AAStyle, NSString *, boxShadow)
 
 + (AAStyle *)styleWithColor:(NSString *)color;
 
