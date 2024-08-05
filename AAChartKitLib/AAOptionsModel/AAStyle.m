@@ -59,6 +59,8 @@ AAPropSetFuncImplementation(AAStyle, NSString *, top)
 AAPropSetFuncImplementation(AAStyle, NSString *, transition)
 AAPropSetFuncImplementation(AAStyle, NSString *, whiteSpace)
 AAPropSetFuncImplementation(AAStyle, NSNumber *, width)
+AAPropSetFuncImplementation(AAStyle, NSString *, backdropFilter)
+AAPropSetFuncImplementation(AAStyle, NSString *, boxShadow)
 
 + (AAStyle *)styleWithColor:(NSString *)color {
     return [self styleWithColor:color
